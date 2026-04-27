@@ -656,27 +656,27 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
       {
 
         preferences.begin(EEPROMNameSpace, false); 
-        uint16_t temp = ((uint16_t) receive_BT_Array[3])|receive_BT_Array[4];
+        uint16_t temp = ((uint16_t) receive_BT_Array[3]<<8)|receive_BT_Array[4];
         preferences.putShort("Old_sensor_OilLevelEmpty",temp);
-        temp = ((uint16_t) receive_BT_Array[5])|receive_BT_Array[6];
+        temp = ((uint16_t) receive_BT_Array[5]<<8)|receive_BT_Array[6];
         preferences.putShort("Old_sensor_OilLevel_10",temp);
-        temp = ((uint16_t) receive_BT_Array[7])|receive_BT_Array[8];
+        temp = ((uint16_t) receive_BT_Array[7]<<8)|receive_BT_Array[8];
         preferences.putShort("Old_sensor_OilLevel_20",temp);
-        temp = ((uint16_t) receive_BT_Array[9])|receive_BT_Array[10];
+        temp = ((uint16_t) receive_BT_Array[9]<<8)|receive_BT_Array[10];
         preferences.putShort("Old_sensor_OilLevel_30",temp);
-        temp = ((uint16_t) receive_BT_Array[11])|receive_BT_Array[12];
+        temp = ((uint16_t) receive_BT_Array[11]<<8)|receive_BT_Array[12];
         preferences.putShort("Old_sensor_OilLevel_40",temp);
-        temp = ((uint16_t) receive_BT_Array[13])|receive_BT_Array[14];
+        temp = ((uint16_t) receive_BT_Array[13]<<8)|receive_BT_Array[14];
         preferences.putShort("Old_sensor_OilLevel_50",temp);
-        temp = ((uint16_t) receive_BT_Array[15])|receive_BT_Array[16];
+        temp = ((uint16_t) receive_BT_Array[15]<<8)|receive_BT_Array[16];
         preferences.putShort("Old_sensor_OilLevel_60",temp);
-        temp = ((uint16_t) receive_BT_Array[17])|receive_BT_Array[18];
+        temp = ((uint16_t) receive_BT_Array[17]<<8)|receive_BT_Array[18];
         preferences.putShort("Old_sensor_OilLevel_70",temp);
-        temp = ((uint16_t) receive_BT_Array[19])|receive_BT_Array[20];
+        temp = ((uint16_t) receive_BT_Array[19]<<8)|receive_BT_Array[20];
         preferences.putShort("Old_sensor_OilLevel_80",temp);
-        temp = ((uint16_t) receive_BT_Array[21])|receive_BT_Array[22];
+        temp = ((uint16_t) receive_BT_Array[21]<<8)|receive_BT_Array[22];
         preferences.putShort("Old_sensor_OilLevel_90",temp);
-        temp = ((uint16_t) receive_BT_Array[23])|receive_BT_Array[24];
+        temp = ((uint16_t) receive_BT_Array[23]<<8)|receive_BT_Array[24];
         preferences.putShort("Old_sensor_OilLevelFull",temp);
 
 
