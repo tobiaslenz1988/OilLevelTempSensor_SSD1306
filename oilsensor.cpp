@@ -16,6 +16,9 @@ extern uint8_t testValue_oilLevelPercentage;
 extern uint16_t OldOilTempCompValues[];
 extern uint16_t OldOilLevelCompValues[];
 
+extern uint16_t NewOilTempCompValues[];
+extern uint16_t NewOilLevelCompValues[];
+
 
 
 /* This methods converts the received impulses to an Percentage for OilLevel and Oil Temperature*/
@@ -73,7 +76,7 @@ void convertImpulseToPercentage(uint16_t cntRawData_Temp, uint16_t cntRawData_Le
           if (cntRawData_Temp >= NewOilTempCompValues[3]) { oilTemperature = 55; }else
           if (cntRawData_Temp >= NewOilTempCompValues[2]) { oilTemperature = 50; }else
           if (cntRawData_Temp >= NewOilTempCompValues[1]) { oilTemperature = 40; }else
-		  if (cntRawData_Temp >= NewOilTempCompValues[0]) { oilTemperature = 30; }else
+		  if (cntRawData_Temp >= NewOilTempCompValues[0]) { oilTemperature = 30; }
         }else{ oilTemperature = OilTemperaturePercentageErrorValue;}
       }else{
         if (oilLevelPercentage > 0) 
