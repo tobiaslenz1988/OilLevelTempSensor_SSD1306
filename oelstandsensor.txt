@@ -122,12 +122,16 @@ bool TempToggle                         = false;
 bool TimeoutSensorDetected              = true;
 char SoftwareVersion[]                  = "X003";       
 portMUX_TYPE timerMux                   = portMUX_INITIALIZER_UNLOCKED;
-char  Modulename[]                      = "pimmelmaus";
+char  Modulename[]                      = "OilSensor";
 bool NewData                            = false;
 bool statusOfExtraOutputPin             = false;
+bool toggleInvertDisplayFlag            = false;
 
-uint16_t OilTempCompValues[]            ={Old_sensor_Temperature_30,Old_sensor_Temperature_40,Old_sensor_Temperature_50,Old_sensor_Temperature_55,Old_sensor_Temperature_60,Old_sensor_Temperature_65,Old_sensor_Temperature_70,Old_sensor_Temperature_75,Old_sensor_Temperature_80,Old_sensor_Temperature_85,Old_sensor_Temperature_90,Old_sensor_Temperature_95,Old_sensor_Temperature_100,Old_sensor_Temperature_105,Old_sensor_Temperature_110,Old_sensor_Temperature_115};
-uint16_t OilLevelCompValues[]           ={Old_sensor_OilLevelEmpty,Old_sensor_OilLevel_10,Old_sensor_OilLevel_20,Old_sensor_OilLevel_30,Old_sensor_OilLevel_40,Old_sensor_OilLevel_50,Old_sensor_OilLevel_60,Old_sensor_OilLevel_70,Old_sensor_OilLevel_80,Old_sensor_OilLevel_90,Old_sensor_OilLevelFull};
+uint16_t OldOilTempCompValues[]         = {Old_sensor_Temperature_30,Old_sensor_Temperature_40,Old_sensor_Temperature_50,Old_sensor_Temperature_55,Old_sensor_Temperature_60,Old_sensor_Temperature_65,Old_sensor_Temperature_70,Old_sensor_Temperature_75,Old_sensor_Temperature_80,Old_sensor_Temperature_85,Old_sensor_Temperature_90,Old_sensor_Temperature_95,Old_sensor_Temperature_100,Old_sensor_Temperature_105,Old_sensor_Temperature_110,Old_sensor_Temperature_115};
+uint16_t OldOilLevelCompValues[]        = {Old_sensor_OilLevelEmpty,Old_sensor_OilLevel_10,Old_sensor_OilLevel_20,Old_sensor_OilLevel_30,Old_sensor_OilLevel_40,Old_sensor_OilLevel_50,Old_sensor_OilLevel_60,Old_sensor_OilLevel_70,Old_sensor_OilLevel_80,Old_sensor_OilLevel_90,Old_sensor_OilLevelFull};
+
+uint16_t NewOilTempCompValues[]         = {New_sensor_Temperature_30,New_sensor_Temperature_40,New_sensor_Temperature_50,New_sensor_Temperature_55,New_sensor_Temperature_60,New_sensor_Temperature_65,New_sensor_Temperature_70,New_sensor_Temperature_75,New_sensor_Temperature_80,New_sensor_Temperature_85,New_sensor_Temperature_90,New_sensor_Temperature_95,New_sensor_Temperature_100,New_sensor_Temperature_105,New_sensor_Temperature_110,New_sensor_Temperature_115};
+uint16_t NewOilLevelCompValues[]        = {New_sensor_OilLevelEmpty,New_sensor_OilLevel_10,New_sensor_OilLevel_20,New_sensor_OilLevel_30,New_sensor_OilLevel_40,New_sensor_OilLevel_50,New_sensor_OilLevel_60,New_sensor_OilLevel_70,New_sensor_OilLevel_80,New_sensor_OilLevel_90,New_sensor_OilLevelFull};
 
 
 #define EEPROMNameSpace               "my_variables"
@@ -145,6 +149,7 @@ uint16_t OilLevelCompValues[]           ={Old_sensor_OilLevelEmpty,Old_sensor_Oi
 uint8_t BT_rx_buffer[Buffersize];
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
+
 void ARDUINO_ISR_ATTR onTimer() {
   /* This toggle is for debug purpose only.. */
   /* You could verify at Pin ISRDebugTogglePin how often the ISR is called. */
@@ -427,15 +432,15 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
         SerialBT.print(0x06); 
         uint8_t i = 0;
         uint8_t tempvar;
-        for(i=0;i<sizeof(OilTempCompValues);i++)
+        for(i=0;i<sizeof(OldOilTempCompValues);i++)
         {
           tempvar = 
             /* As example testval =         500 == 0x01F4    */
             /* SerialBT.print(testval >> 8);         -> 0x01 */
             /* SerialBT.print(testval & 0xFF);       -> 0xF4 */
-          tempvar = (OilTempCompValues[i] >> 8) ;
+          tempvar = (OldOilTempCompValues[i] >> 8) ;
           SerialBT.print(tempvar);
-          tempvar = (OilTempCompValues[i] & 0xFF);
+          tempvar = (OldOilTempCompValues[i] & 0xFF);
           SerialBT.print(tempvar);
         }                 
         
@@ -451,15 +456,15 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
         SerialBT.print(0x07);                  
         uint8_t i = 0;
         uint8_t tempvar;
-        for(i=0;i<sizeof(OilLevelCompValues);i++)
+        for(i=0;i<sizeof(OldOilLevelCompValues);i++)
         {
           tempvar = 
             /* As example testval =         500 == 0x01F4    */
             /* SerialBT.print(testval >> 8);         -> 0x01 */
             /* SerialBT.print(testval & 0xFF);       -> 0xF4 */
-          tempvar = (OilLevelCompValues[i] >> 8) ;
+          tempvar = (OldOilLevelCompValues[i] >> 8) ;
           SerialBT.print(tempvar);
-          tempvar = (OilLevelCompValues[i] & 0xFF);
+          tempvar = (OldOilLevelCompValues[i] & 0xFF);
           SerialBT.print(tempvar);
         } 
         
@@ -609,37 +614,37 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
       {
 
         preferences.begin(EEPROMNameSpace, false); 
-        uint16_t temp = ((uint16_t) receive_BT_Array[3])|receive_BT_Array[4];
+        uint16_t temp = ((uint16_t) receive_BT_Array[3]<<8)|receive_BT_Array[4];
         preferences.putShort("Old_sensor_Temperature_30",temp);
-        temp = ((uint16_t) receive_BT_Array[5])|receive_BT_Array[6];
+        temp = ((uint16_t) receive_BT_Array[5]<<8)|receive_BT_Array[6];
         preferences.putShort("Old_sensor_Temperature_40",temp);
-        temp = ((uint16_t) receive_BT_Array[7])|receive_BT_Array[8];
+        temp = ((uint16_t) receive_BT_Array[7]<<8)|receive_BT_Array[8];
         preferences.putShort("Old_sensor_Temperature_50",temp);
-        temp = ((uint16_t) receive_BT_Array[9])|receive_BT_Array[10];
+        temp = ((uint16_t) receive_BT_Array[9]<<8)|receive_BT_Array[10];
         preferences.putShort("Old_sensor_Temperature_55",temp);
-        temp = ((uint16_t) receive_BT_Array[11])|receive_BT_Array[12];
+        temp = ((uint16_t) receive_BT_Array[11]<<8)|receive_BT_Array[12];
         preferences.putShort("Old_sensor_Temperature_60",temp);
-        temp = ((uint16_t) receive_BT_Array[13])|receive_BT_Array[14];
+        temp = ((uint16_t) receive_BT_Array[13]<<8)|receive_BT_Array[14];
         preferences.putShort("Old_sensor_Temperature_65",temp);
-        temp = ((uint16_t) receive_BT_Array[15])|receive_BT_Array[16];
+        temp = ((uint16_t) receive_BT_Array[15]<<8)|receive_BT_Array[16];
         preferences.putShort("Old_sensor_Temperature_70",temp);
-        temp = ((uint16_t) receive_BT_Array[17])|receive_BT_Array[18];
+        temp = ((uint16_t) receive_BT_Array[17]<<8)|receive_BT_Array[18];
         preferences.putShort("Old_sensor_Temperature_75",temp);
-        temp = ((uint16_t) receive_BT_Array[19])|receive_BT_Array[20];
+        temp = ((uint16_t) receive_BT_Array[19]<<8)|receive_BT_Array[20];
         preferences.putShort("Old_sensor_Temperature_80",temp);
-        temp = ((uint16_t) receive_BT_Array[21])|receive_BT_Array[22];
+        temp = ((uint16_t) receive_BT_Array[21]<<8)|receive_BT_Array[22];
         preferences.putShort("Old_sensor_Temperature_85",temp);
-        temp = ((uint16_t) receive_BT_Array[23])|receive_BT_Array[24];
+        temp = ((uint16_t) receive_BT_Array[23]<<8)|receive_BT_Array[24];
         preferences.putShort("Old_sensor_Temperature_90",temp);
-        temp = ((uint16_t) receive_BT_Array[25])|receive_BT_Array[26];
+        temp = ((uint16_t) receive_BT_Array[25]<<8)|receive_BT_Array[26];
         preferences.putShort("Old_sensor_Temperature_95",temp);
-        temp = ((uint16_t) receive_BT_Array[27])|receive_BT_Array[28];
+        temp = ((uint16_t) receive_BT_Array[27]<<8)|receive_BT_Array[28];
         preferences.putShort("Old_sensor_Temperature_100",temp);
-        temp = ((uint16_t) receive_BT_Array[29])|receive_BT_Array[30];
+        temp = ((uint16_t) receive_BT_Array[29]<<8)|receive_BT_Array[30];
         preferences.putShort("Old_sensor_Temperature_105",temp);
-        temp = ((uint16_t) receive_BT_Array[31])|receive_BT_Array[32];
+        temp = ((uint16_t) receive_BT_Array[31]<<8)|receive_BT_Array[32];
         preferences.putShort("Old_sensor_Temperature_110",temp);
-        temp = ((uint16_t) receive_BT_Array[33])|receive_BT_Array[34];
+        temp = ((uint16_t) receive_BT_Array[33]<<8)|receive_BT_Array[34];
         preferences.putShort("Old_sensor_Temperature_115",temp);
 
         preferences.end();
@@ -655,27 +660,27 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
       {
 
         preferences.begin(EEPROMNameSpace, false); 
-        uint16_t temp = ((uint16_t) receive_BT_Array[3])|receive_BT_Array[4];
+        uint16_t temp = ((uint16_t) receive_BT_Array[3]<<8)|receive_BT_Array[4];
         preferences.putShort("Old_sensor_OilLevelEmpty",temp);
-        temp = ((uint16_t) receive_BT_Array[5])|receive_BT_Array[6];
+        temp = ((uint16_t) receive_BT_Array[5]<<8)|receive_BT_Array[6];
         preferences.putShort("Old_sensor_OilLevel_10",temp);
-        temp = ((uint16_t) receive_BT_Array[7])|receive_BT_Array[8];
+        temp = ((uint16_t) receive_BT_Array[7]<<8)|receive_BT_Array[8];
         preferences.putShort("Old_sensor_OilLevel_20",temp);
-        temp = ((uint16_t) receive_BT_Array[7])|receive_BT_Array[8];
+        temp = ((uint16_t) receive_BT_Array[9]<<8)|receive_BT_Array[10];
         preferences.putShort("Old_sensor_OilLevel_30",temp);
-        temp = ((uint16_t) receive_BT_Array[9])|receive_BT_Array[10];
+        temp = ((uint16_t) receive_BT_Array[11]<<8)|receive_BT_Array[12];
         preferences.putShort("Old_sensor_OilLevel_40",temp);
-        temp = ((uint16_t) receive_BT_Array[11])|receive_BT_Array[12];
+        temp = ((uint16_t) receive_BT_Array[13]<<8)|receive_BT_Array[14];
         preferences.putShort("Old_sensor_OilLevel_50",temp);
-        temp = ((uint16_t) receive_BT_Array[13])|receive_BT_Array[14];
+        temp = ((uint16_t) receive_BT_Array[15]<<8)|receive_BT_Array[16];
         preferences.putShort("Old_sensor_OilLevel_60",temp);
-        temp = ((uint16_t) receive_BT_Array[15])|receive_BT_Array[16];
+        temp = ((uint16_t) receive_BT_Array[17]<<8)|receive_BT_Array[18];
         preferences.putShort("Old_sensor_OilLevel_70",temp);
-        temp = ((uint16_t) receive_BT_Array[17])|receive_BT_Array[18];
+        temp = ((uint16_t) receive_BT_Array[19]<<8)|receive_BT_Array[20];
         preferences.putShort("Old_sensor_OilLevel_80",temp);
-        temp = ((uint16_t) receive_BT_Array[19])|receive_BT_Array[20];
+        temp = ((uint16_t) receive_BT_Array[21]<<8)|receive_BT_Array[22];
         preferences.putShort("Old_sensor_OilLevel_90",temp);
-        temp = ((uint16_t) receive_BT_Array[21])|receive_BT_Array[22];
+        temp = ((uint16_t) receive_BT_Array[23]<<8)|receive_BT_Array[24];
         preferences.putShort("Old_sensor_OilLevelFull",temp);
 
 
@@ -697,7 +702,6 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
     {
       if(receive_BT_Array[1] == UDS_Session_Control_Default_Session)
       {
-
           
           if(debugFlag != false)
           {
@@ -740,50 +744,113 @@ void getBTData(const uint8_t *buffer, size_t size)
   NewData = true;
 }
 
-void showOilLevelAtDisplay(uint8_t percentageOillevel)
+void showOilLevelAtDisplay(uint8_t percentageOillevel,bool initflag)
 {
-
   // Clear the buffer.
   display.clearDisplay();
+  if(TimeoutSensorDetected == false)
+  {  
+      //if(percentageOillevel == 00){display.drawBitmap(0, 0, image_OilLevel_00, 128, 64, 1);} else
+      //if(percentageOillevel == 10){ display.drawBitmap(0, 0, image_OilLevel_10, 128, 64, 1);} else
+    /* Oillevel Ok */
+    if(percentageOillevel >= 20){
+      /* Design Reason Background is Dark all Text is White*/
+      display.invertDisplay(true);  
+      if(percentageOillevel == 20){ display.drawBitmap(0, 0, image_OilLevel_20, 128, 64, 1);} else
+      if(percentageOillevel == 30){ display.drawBitmap(0, 0, image_OilLevel_30, 128, 64, 1);} else
+      if(percentageOillevel == 40){ display.drawBitmap(0, 0, image_OilLevel_40, 128, 64, 1);} else
+      if(percentageOillevel == 50){ display.drawBitmap(0, 0, image_OilLevel_50, 128, 64, 1);} else
+      if(percentageOillevel == 60){ display.drawBitmap(0, 0, image_OilLevel_60, 128, 64, 1);} else
+      if(percentageOillevel == 70){display.drawBitmap(0, 0, image_OilLevel_70, 128, 64, 1);} else
+      if(percentageOillevel == 80){display.drawBitmap(0, 0, image_OilLevel_80, 128, 64, 1);} else
+      if(percentageOillevel == 90){display.drawBitmap(0, 0, image_OilLevel_90, 128, 64, 1);} else
+      if(percentageOillevel == 100){display.drawBitmap(0, 0, image_OilLevel_100, 128, 64, 1);} 
 
-  if(percentageOillevel == 00){ display.drawBitmap(0, 0, image_OilLevel_00, 128, 64, 1);} else
-  if(percentageOillevel == 10){ display.drawBitmap(0, 0, image_OilLevel_10, 128, 64, 1);} else
-  if(percentageOillevel == 20){ display.drawBitmap(0, 0, image_OilLevel_20, 128, 64, 1);} else
-  if(percentageOillevel == 30){ display.drawBitmap(0, 0, image_OilLevel_30, 128, 64, 1);} else
-  if(percentageOillevel == 40){ display.drawBitmap(0, 0, image_OilLevel_40, 128, 64, 1);} else
-  if(percentageOillevel == 50){ display.drawBitmap(0, 0, image_OilLevel_50, 128, 64, 1);} else
-  if(percentageOillevel == 60){ display.drawBitmap(0, 0, image_OilLevel_60, 128, 64, 1);} else
-  if(percentageOillevel == 70){display.drawBitmap(0, 0, image_OilLevel_70, 128, 64, 1);} else
-  if(percentageOillevel == 80){display.drawBitmap(0, 0, image_OilLevel_80, 128, 64, 1);} else
-  if(percentageOillevel == 90){display.drawBitmap(0, 0, image_OilLevel_90, 128, 64, 1);} else
-  if(percentageOillevel >= 100){display.drawBitmap(0, 0, image_OilLevel_100, 128, 64, 1);} 
+      display.setTextColor(BLACK);
+      display.setTextSize(1);
+    
+      display.setCursor(24, 6);
+      display.print("MAX");
 
-  display.setTextColor(BLACK);
-  display.setTextSize(1);
- 
-  display.setCursor(24, 6);
-  display.print("MAX");
+      display.setCursor(24, 53);
+      display.print("MIN");
 
-  display.setCursor(24, 53);
-  display.print("MIN");
+      display.setTextSize(3);
+      display.setCursor(37, 22);
+      //display.print(char(248));
+  
+      display.print(oilTemperature);
 
-  display.setTextSize(3);
-  display.setCursor(37, 22);
-  display.print(oilTemperature);
-  display.display();
+      display.display();
+    }else{
+      
+      if(initflag==false)
+      {
+         /* Oillevel not Ok */
+        if(percentageOillevel == 00){ display.drawBitmap(0, 0, image_OilLevel_00, 128, 64, 1);} else
+        if(percentageOillevel == 10){ display.drawBitmap(0, 0, image_OilLevel_10, 128, 64, 1);} 
+        display.setTextColor(BLACK);
+        display.setTextSize(1);
+      
+        display.setCursor(24, 6);
+        display.print("MAX");
+
+        display.setCursor(24, 53);
+        display.print("MIN");
+
+        display.setTextSize(2);
+        /* Position of Text "Check" measured from the Top left corner (0,0) in Pixel */
+        display.setCursor(53, 13);
+        display.print("CHECK");
+        display.setCursor(63, 31);
+        display.print("OIL");
+        if(toggleInvertDisplayFlag== false)
+        {
+          toggleInvertDisplayFlag = true;
+          display.invertDisplay(true);
+        }else{
+          toggleInvertDisplayFlag = false;
+          display.invertDisplay(false);
+        }
+        display.display();
+      }
+    }
+  }else{
+        /* if Sensor TO detected */
+        display.setTextColor(WHITE);
+
+        display.setTextSize(2);
+        /* Position of Text "Check" measured from the Top left corner (0,0) in Pixel */
+        display.setCursor(30, 12);
+        display.print("Sensor");
+        display.setCursor(50, 35);
+        display.print("OL");
+        
+        if(toggleInvertDisplayFlag == false)
+        {
+          toggleInvertDisplayFlag = true;
+          display.invertDisplay(true);
+        }else{
+          toggleInvertDisplayFlag = false;
+          display.invertDisplay(false);
+        }
+        display.display();
+  }
 }
 
-void controlInitOfDisplay()
+void controlOfDisplay()
 {
   if ((sequenceCounter>=8) && (sequenceCounter<=15) )
   {
-    showOilLevelAtDisplay(oilLevelPercentage);
+    showOilLevelAtDisplay(oilLevelPercentage,false);
   } 
+  /* short initialization sequence*/
   if((sequenceCounter>=3) && (sequenceCounter<=7))
   {
-    showOilLevelAtDisplay(startingsequence[sequenceCounter-3]);
+    showOilLevelAtDisplay(startingsequence[sequenceCounter-3],true);
     sequenceCounter = sequenceCounter+1;
   }
+  /* perform a short Delay*/
   if((sequenceCounter<3))
   {
     sequenceCounter = sequenceCounter+1;
@@ -806,34 +873,63 @@ void readEepromValues()
   leng = temp.length() +1;
   temp.toCharArray(Modulename, leng);
   
-  OilTempCompValues[0] = preferences.getUShort("Old_sensor_Temperature_30",Old_sensor_Temperature_30);
-  OilTempCompValues[1] = preferences.getUShort("Old_sensor_Temperature_40",Old_sensor_Temperature_40);
-  OilTempCompValues[2] = preferences.getUShort("Old_sensor_Temperature_50",Old_sensor_Temperature_50);
-  OilTempCompValues[3] = preferences.getUShort("Old_sensor_Temperature_55",Old_sensor_Temperature_55);
-  OilTempCompValues[4] = preferences.getUShort("Old_sensor_Temperature_60",Old_sensor_Temperature_60);
-  OilTempCompValues[5] = preferences.getUShort("Old_sensor_Temperature_65",Old_sensor_Temperature_65);
-  OilTempCompValues[6] = preferences.getUShort("Old_sensor_Temperature_70",Old_sensor_Temperature_70);
-  OilTempCompValues[7] = preferences.getUShort("Old_sensor_Temperature_75",Old_sensor_Temperature_75);
-  OilTempCompValues[8] = preferences.getUShort("Old_sensor_Temperature_80",Old_sensor_Temperature_80);
-  OilTempCompValues[9] = preferences.getUShort("Old_sensor_Temperature_85",Old_sensor_Temperature_85);
-  OilTempCompValues[10] = preferences.getUShort("Old_sensor_Temperature_90",Old_sensor_Temperature_90);
-  OilTempCompValues[11] = preferences.getUShort("Old_sensor_Temperature_95",Old_sensor_Temperature_95);
-  OilTempCompValues[12] = preferences.getUShort("Old_sensor_Temperature_100",Old_sensor_Temperature_100);
-  OilTempCompValues[13] = preferences.getUShort("Old_sensor_Temperature_105",Old_sensor_Temperature_105);
-  OilTempCompValues[14] = preferences.getUShort("Old_sensor_Temperature_110",Old_sensor_Temperature_110);
-  OilTempCompValues[15] = preferences.getUShort("Old_sensor_Temperature_115",Old_sensor_Temperature_115);
+  OldOilTempCompValues[0] = preferences.getUShort("Old_sensor_Temperature_30",Old_sensor_Temperature_30);
+  OldOilTempCompValues[1] = preferences.getUShort("Old_sensor_Temperature_40",Old_sensor_Temperature_40);
+  OldOilTempCompValues[2] = preferences.getUShort("Old_sensor_Temperature_50",Old_sensor_Temperature_50);
+  OldOilTempCompValues[3] = preferences.getUShort("Old_sensor_Temperature_55",Old_sensor_Temperature_55);
+  OldOilTempCompValues[4] = preferences.getUShort("Old_sensor_Temperature_60",Old_sensor_Temperature_60);
+  OldOilTempCompValues[5] = preferences.getUShort("Old_sensor_Temperature_65",Old_sensor_Temperature_65);
+  OldOilTempCompValues[6] = preferences.getUShort("Old_sensor_Temperature_70",Old_sensor_Temperature_70);
+  OldOilTempCompValues[7] = preferences.getUShort("Old_sensor_Temperature_75",Old_sensor_Temperature_75);
+  OldOilTempCompValues[8] = preferences.getUShort("Old_sensor_Temperature_80",Old_sensor_Temperature_80);
+  OldOilTempCompValues[9] = preferences.getUShort("Old_sensor_Temperature_85",Old_sensor_Temperature_85);
+  OldOilTempCompValues[10] = preferences.getUShort("Old_sensor_Temperature_90",Old_sensor_Temperature_90);
+  OldOilTempCompValues[11] = preferences.getUShort("Old_sensor_Temperature_95",Old_sensor_Temperature_95);
+  OldOilTempCompValues[12] = preferences.getUShort("Old_sensor_Temperature_100",Old_sensor_Temperature_100);
+  OldOilTempCompValues[13] = preferences.getUShort("Old_sensor_Temperature_105",Old_sensor_Temperature_105);
+  OldOilTempCompValues[14] = preferences.getUShort("Old_sensor_Temperature_110",Old_sensor_Temperature_110);
+  OldOilTempCompValues[15] = preferences.getUShort("Old_sensor_Temperature_115",Old_sensor_Temperature_115);
 
-  OilLevelCompValues[0] = preferences.getUShort("Old_sensor_OilLevelEmpty",Old_sensor_OilLevelEmpty);
-  OilLevelCompValues[1] = preferences.getUShort("Old_sensor_OilLevel_10",Old_sensor_OilLevel_10);
-  OilLevelCompValues[2] = preferences.getUShort("Old_sensor_OilLevel_20",Old_sensor_OilLevel_20);
-  OilLevelCompValues[3] = preferences.getUShort("Old_sensor_OilLevel_30",Old_sensor_OilLevel_30);
-  OilLevelCompValues[4] = preferences.getUShort("Old_sensor_OilLevel_40",Old_sensor_OilLevel_40);
-  OilLevelCompValues[5] = preferences.getUShort("Old_sensor_OilLevel_50",Old_sensor_OilLevel_50);
-  OilLevelCompValues[6] = preferences.getUShort("Old_sensor_OilLevel_60",Old_sensor_OilLevel_60);
-  OilLevelCompValues[7] = preferences.getUShort("Old_sensor_OilLevel_70",Old_sensor_OilLevel_70);
-  OilLevelCompValues[8] = preferences.getUShort("Old_sensor_OilLevel_80",Old_sensor_OilLevel_80);
-  OilLevelCompValues[9] = preferences.getUShort("Old_sensor_OilLevel_90",Old_sensor_OilLevel_90);
-  OilLevelCompValues[10] = preferences.getUShort("Old_sensor_OilLevelFull",Old_sensor_OilLevelFull);
+  OldOilLevelCompValues[0] = preferences.getUShort("Old_sensor_OilLevelEmpty",Old_sensor_OilLevelEmpty);
+  OldOilLevelCompValues[1] = preferences.getUShort("Old_sensor_OilLevel_10",Old_sensor_OilLevel_10);
+  OldOilLevelCompValues[2] = preferences.getUShort("Old_sensor_OilLevel_20",Old_sensor_OilLevel_20);
+  OldOilLevelCompValues[3] = preferences.getUShort("Old_sensor_OilLevel_30",Old_sensor_OilLevel_30);
+  OldOilLevelCompValues[4] = preferences.getUShort("Old_sensor_OilLevel_40",Old_sensor_OilLevel_40);
+  OldOilLevelCompValues[5] = preferences.getUShort("Old_sensor_OilLevel_50",Old_sensor_OilLevel_50);
+  OldOilLevelCompValues[6] = preferences.getUShort("Old_sensor_OilLevel_60",Old_sensor_OilLevel_60);
+  OldOilLevelCompValues[7] = preferences.getUShort("Old_sensor_OilLevel_70",Old_sensor_OilLevel_70);
+  OldOilLevelCompValues[8] = preferences.getUShort("Old_sensor_OilLevel_80",Old_sensor_OilLevel_80);
+  OldOilLevelCompValues[9] = preferences.getUShort("Old_sensor_OilLevel_90",Old_sensor_OilLevel_90);
+  OldOilLevelCompValues[10] = preferences.getUShort("Old_sensor_OilLevelFull",Old_sensor_OilLevelFull);
+
+  NewOilTempCompValues[0] = preferences.getUShort("New_sensor_Temperature_30",New_sensor_Temperature_30);
+  NewOilTempCompValues[1] = preferences.getUShort("New_sensor_Temperature_40",New_sensor_Temperature_40);
+  NewOilTempCompValues[2] = preferences.getUShort("New_sensor_Temperature_50",New_sensor_Temperature_50);
+  NewOilTempCompValues[3] = preferences.getUShort("New_sensor_Temperature_55",New_sensor_Temperature_55);
+  NewOilTempCompValues[4] = preferences.getUShort("New_sensor_Temperature_60",New_sensor_Temperature_60);
+  NewOilTempCompValues[5] = preferences.getUShort("New_sensor_Temperature_65",New_sensor_Temperature_65);
+  NewOilTempCompValues[6] = preferences.getUShort("New_sensor_Temperature_70",New_sensor_Temperature_70);
+  NewOilTempCompValues[7] = preferences.getUShort("New_sensor_Temperature_75",New_sensor_Temperature_75);
+  NewOilTempCompValues[8] = preferences.getUShort("New_sensor_Temperature_80",New_sensor_Temperature_80);
+  NewOilTempCompValues[9] = preferences.getUShort("New_sensor_Temperature_85",New_sensor_Temperature_85);
+  NewOilTempCompValues[10] = preferences.getUShort("New_sensor_Temperature_90",New_sensor_Temperature_90);
+  NewOilTempCompValues[11] = preferences.getUShort("New_sensor_Temperature_95",New_sensor_Temperature_95);
+  NewOilTempCompValues[12] = preferences.getUShort("New_sensor_Temperature_100",New_sensor_Temperature_100);
+  NewOilTempCompValues[13] = preferences.getUShort("New_sensor_Temperature_105",New_sensor_Temperature_105);
+  NewOilTempCompValues[14] = preferences.getUShort("New_sensor_Temperature_110",New_sensor_Temperature_110);
+  NewOilTempCompValues[15] = preferences.getUShort("New_sensor_Temperature_115",New_sensor_Temperature_115);
+
+  NewOilLevelCompValues[0] = preferences.getUShort("New_sensor_OilLevelEmpty",New_sensor_OilLevelEmpty);
+  NewOilLevelCompValues[1] = preferences.getUShort("New_sensor_OilLevel_10",New_sensor_OilLevel_10);
+  NewOilLevelCompValues[2] = preferences.getUShort("New_sensor_OilLevel_20",New_sensor_OilLevel_20);
+  NewOilLevelCompValues[3] = preferences.getUShort("New_sensor_OilLevel_30",New_sensor_OilLevel_30);
+  NewOilLevelCompValues[4] = preferences.getUShort("New_sensor_OilLevel_40",New_sensor_OilLevel_40);
+  NewOilLevelCompValues[5] = preferences.getUShort("New_sensor_OilLevel_50",New_sensor_OilLevel_50);
+  NewOilLevelCompValues[6] = preferences.getUShort("New_sensor_OilLevel_60",New_sensor_OilLevel_60);
+  NewOilLevelCompValues[7] = preferences.getUShort("New_sensor_OilLevel_70",New_sensor_OilLevel_70);
+  NewOilLevelCompValues[8] = preferences.getUShort("New_sensor_OilLevel_80",New_sensor_OilLevel_80);
+  NewOilLevelCompValues[9] = preferences.getUShort("New_sensor_OilLevel_90",New_sensor_OilLevel_90);
+  NewOilLevelCompValues[10] = preferences.getUShort("New_sensor_OilLevelFull",New_sensor_OilLevelFull);
 
   preferences.end();
 }
@@ -841,7 +937,6 @@ void readEepromValues()
 
 
 void setup() {
-
   readEepromValues();
   if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
     for(;;);
@@ -891,10 +986,9 @@ void loop() {
   portEXIT_CRITICAL(&timerMux);
 
   convertImpulseToPercentage(returnArray[1], returnArray[3],debugFlag);
-  
   sendInfosToBT(oilTemperature, oilLevelPercentage,returnArray);
   //TempToggle = showLevelAndTempAtLED(TempToggle,oilLevelPercentage,oilTemperature);
   analyse_BT_Protocol(BT_rx_buffer);
-  controlInitOfDisplay();
+  controlOfDisplay();
   delay(1000);
   }

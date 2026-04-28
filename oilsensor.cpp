@@ -13,6 +13,8 @@ extern uint8_t oilLevelPercentage ;
 extern uint8_t testValue_oilTemperature;
 extern uint8_t testValue_oilLevelPercentage;
 
+extern uint16_t OldOilTempCompValues[];
+extern uint16_t OldOilLevelCompValues[];
 
 
 
@@ -24,73 +26,74 @@ void convertImpulseToPercentage(uint16_t cntRawData_Temp, uint16_t cntRawData_Le
 	{
       if(NewOilSensorEquipped==true)
 	  {
-        if (cntRawData_Level > New_sensor_OilLevelFull) { oilLevelPercentage = 253; }else
-        if (cntRawData_Level = New_sensor_OilLevelFull) { oilLevelPercentage = 100; }else
-        if (cntRawData_Level >= New_sensor_OilLevel_90) { oilLevelPercentage = 90; }else
-        if (cntRawData_Level >= New_sensor_OilLevel_80) { oilLevelPercentage = 80; }else
-        if (cntRawData_Level >= New_sensor_OilLevel_70) { oilLevelPercentage = 70; }else
-        if (cntRawData_Level >= New_sensor_OilLevel_60) { oilLevelPercentage = 60; }else
-        if (cntRawData_Level >= New_sensor_OilLevel_50) { oilLevelPercentage = 50; }else
-        if (cntRawData_Level >= New_sensor_OilLevel_40) { oilLevelPercentage = 40; }else
-        if (cntRawData_Level >= New_sensor_OilLevel_30) { oilLevelPercentage = 30; }else
-        if (cntRawData_Level >= New_sensor_OilLevel_20) { oilLevelPercentage = 20; }else
-        if (cntRawData_Level >= New_sensor_OilLevel_10) { oilLevelPercentage = 10; }else
-        if (cntRawData_Level >= New_sensor_OilLevelEmpty) { oilLevelPercentage = 0; }
+        if (cntRawData_Level > NewOilLevelCompValues[10]) { oilLevelPercentage = 253; }else
+        if (cntRawData_Level = NewOilLevelCompValues[10]) { oilLevelPercentage = 100; }else
+        if (cntRawData_Level >= NewOilLevelCompValues[9]) { oilLevelPercentage = 90; }else
+        if (cntRawData_Level >= NewOilLevelCompValues[8]) { oilLevelPercentage = 80; }else
+        if (cntRawData_Level >= NewOilLevelCompValues[7]) { oilLevelPercentage = 70; }else
+        if (cntRawData_Level >= NewOilLevelCompValues[6]) { oilLevelPercentage = 60; }else
+        if (cntRawData_Level >= NewOilLevelCompValues[5]) { oilLevelPercentage = 50; }else
+        if (cntRawData_Level >= NewOilLevelCompValues[4]) { oilLevelPercentage = 40; }else
+        if (cntRawData_Level >= NewOilLevelCompValues[3]) { oilLevelPercentage = 30; }else
+        if (cntRawData_Level >= NewOilLevelCompValues[2]) { oilLevelPercentage = 20; }else
+        if (cntRawData_Level >= NewOilLevelCompValues[1]) { oilLevelPercentage = 10; }else
+        if (cntRawData_Level >= NewOilLevelCompValues[0]) { oilLevelPercentage = 0; }
     
       }else{
-        if (cntRawData_Level > Old_sensor_OilLevelFull) { oilLevelPercentage = 253; }else
-        if (cntRawData_Level = Old_sensor_OilLevelFull) { oilLevelPercentage = 100; }else
-        if (cntRawData_Level >= Old_sensor_OilLevel_90) { oilLevelPercentage = 90; }else
-        if (cntRawData_Level >= Old_sensor_OilLevel_80) { oilLevelPercentage = 80; }else
-        if (cntRawData_Level >= Old_sensor_OilLevel_70) { oilLevelPercentage = 70; }else
-        if (cntRawData_Level >= Old_sensor_OilLevel_60) { oilLevelPercentage = 60; }else
-        if (cntRawData_Level >= Old_sensor_OilLevel_50) { oilLevelPercentage = 50; }else
-        if (cntRawData_Level >= Old_sensor_OilLevel_40) { oilLevelPercentage = 40; }else
-        if (cntRawData_Level >= Old_sensor_OilLevel_30) { oilLevelPercentage = 30; }else
-        if (cntRawData_Level >= Old_sensor_OilLevel_20) { oilLevelPercentage = 20; }else
-        if (cntRawData_Level >= Old_sensor_OilLevel_10) { oilLevelPercentage = 10; }else
-        if (cntRawData_Level >= Old_sensor_OilLevelEmpty) {oilLevelPercentage = 0; }
+        if (cntRawData_Level > OldOilLevelCompValues[10]) { oilLevelPercentage = 253; }else
+        if (cntRawData_Level = OldOilLevelCompValues[10]) { oilLevelPercentage = 100; }else
+        if (cntRawData_Level >= OldOilLevelCompValues[9]) { oilLevelPercentage = 90; }else
+        if (cntRawData_Level >= OldOilLevelCompValues[8]) { oilLevelPercentage = 80; }else
+        if (cntRawData_Level >= OldOilLevelCompValues[7]) { oilLevelPercentage = 70; }else
+        if (cntRawData_Level >= OldOilLevelCompValues[6]) { oilLevelPercentage = 60; }else
+        if (cntRawData_Level >= OldOilLevelCompValues[5]) { oilLevelPercentage = 50; }else
+        if (cntRawData_Level >= OldOilLevelCompValues[4]) { oilLevelPercentage = 40; }else
+        if (cntRawData_Level >= OldOilLevelCompValues[3]) { oilLevelPercentage = 30; }else
+        if (cntRawData_Level >= OldOilLevelCompValues[2]) { oilLevelPercentage = 20; }else
+        if (cntRawData_Level >= OldOilLevelCompValues[1]) { oilLevelPercentage = 10; }else
+        if (cntRawData_Level >= OldOilLevelCompValues[0]) {oilLevelPercentage = 0; }
       }
 
 
       if(NewOilSensorEquipped==true){
         if (oilLevelPercentage > 0) {
-          if (cntRawData_Temp > New_sensor_Temperature_115) { oilTemperature = 253; }else
-          if (cntRawData_Temp = New_sensor_Temperature_115) { oilTemperature = 115; }else
-          if (cntRawData_Temp >= New_sensor_Temperature_110) { oilTemperature = 110; }else
-          if (cntRawData_Temp >= New_sensor_Temperature_105) { oilTemperature = 105; }else
-          if (cntRawData_Temp >= New_sensor_Temperature_100) { oilTemperature = 100; }else
-          if (cntRawData_Temp >= New_sensor_Temperature_95) { oilTemperature = 95; }else
-          if (cntRawData_Temp >= New_sensor_Temperature_90) { oilTemperature = 90; }else
-          if (cntRawData_Temp >= New_sensor_Temperature_85) { oilTemperature = 85; }else
-          if (cntRawData_Temp >= New_sensor_Temperature_80) { oilTemperature = 80; }else
-          if (cntRawData_Temp >= New_sensor_Temperature_75) { oilTemperature = 75; }else
-          if (cntRawData_Temp >= New_sensor_Temperature_70) { oilTemperature = 70; }else
-          if (cntRawData_Temp >= New_sensor_Temperature_65) { oilTemperature = 65; }else
-          if (cntRawData_Temp >= New_sensor_Temperature_60) { oilTemperature = 60; }else
-          if (cntRawData_Temp >= New_sensor_Temperature_55) { oilTemperature = 55; }else
-          if (cntRawData_Temp >= New_sensor_Temperature_50) { oilTemperature = 50; }else
-          if (cntRawData_Temp >= New_sensor_Temperature_40) { oilTemperature = 40; }
+          if (cntRawData_Temp > NewOilTempCompValues[15]) { oilTemperature = 253; }else
+          if (cntRawData_Temp = NewOilTempCompValues[15]) { oilTemperature = 115; }else
+          if (cntRawData_Temp >= NewOilTempCompValues[14]) { oilTemperature = 110; }else
+          if (cntRawData_Temp >= NewOilTempCompValues[13]) { oilTemperature = 105; }else
+          if (cntRawData_Temp >= NewOilTempCompValues[12]) { oilTemperature = 100; }else
+          if (cntRawData_Temp >= NewOilTempCompValues[11]) { oilTemperature = 95; }else
+          if (cntRawData_Temp >= NewOilTempCompValues[10]) { oilTemperature = 90; }else
+          if (cntRawData_Temp >= NewOilTempCompValues[9]) { oilTemperature = 85; }else
+          if (cntRawData_Temp >= NewOilTempCompValues[8]) { oilTemperature = 80; }else
+          if (cntRawData_Temp >= NewOilTempCompValues[7]) { oilTemperature = 75; }else
+          if (cntRawData_Temp >= NewOilTempCompValues[6]) { oilTemperature = 70; }else
+          if (cntRawData_Temp >= NewOilTempCompValues[5]) { oilTemperature = 65; }else
+          if (cntRawData_Temp >= NewOilTempCompValues[4]) { oilTemperature = 60; }else
+          if (cntRawData_Temp >= NewOilTempCompValues[3]) { oilTemperature = 55; }else
+          if (cntRawData_Temp >= NewOilTempCompValues[2]) { oilTemperature = 50; }else
+          if (cntRawData_Temp >= NewOilTempCompValues[1]) { oilTemperature = 40; }else
+		  if (cntRawData_Temp >= NewOilTempCompValues[0]) { oilTemperature = 30; }else
         }else{ oilTemperature = OilTemperaturePercentageErrorValue;}
       }else{
         if (oilLevelPercentage > 0) 
-        { if (cntRawData_Temp > Old_sensor_Temperature_115) { oilTemperature = 253; }else
-          if (cntRawData_Temp = Old_sensor_Temperature_115) { oilTemperature = 115; }else
-          if (cntRawData_Temp >= Old_sensor_Temperature_110) { oilTemperature = 110; }else
-          if (cntRawData_Temp >= Old_sensor_Temperature_105) { oilTemperature = 105; }else
-          if (cntRawData_Temp >= Old_sensor_Temperature_100) { oilTemperature = 100; }else
-          if (cntRawData_Temp >= Old_sensor_Temperature_95) { oilTemperature = 95; }else
-          if (cntRawData_Temp >= Old_sensor_Temperature_90) { oilTemperature = 90; }else
-          if (cntRawData_Temp >= Old_sensor_Temperature_85) { oilTemperature = 85; }else
-          if (cntRawData_Temp >= Old_sensor_Temperature_80) { oilTemperature = 80; }else
-          if (cntRawData_Temp >= Old_sensor_Temperature_75) { oilTemperature = 75; }else
-          if (cntRawData_Temp >= Old_sensor_Temperature_70) { oilTemperature = 70; }else
-          if (cntRawData_Temp >= Old_sensor_Temperature_65) { oilTemperature = 65; }else
-          if (cntRawData_Temp >= Old_sensor_Temperature_60) { oilTemperature = 60; }else
-          if (cntRawData_Temp >= Old_sensor_Temperature_55) { oilTemperature = 55; }else
-          if (cntRawData_Temp >= Old_sensor_Temperature_50) { oilTemperature = 50; }else
-          if (cntRawData_Temp >= Old_sensor_Temperature_40) { oilTemperature = 40; }else
-          if (cntRawData_Temp >= Old_sensor_Temperature_30) { oilTemperature = 30; }
+        { if (cntRawData_Temp > OldOilTempCompValues[15]) { oilTemperature = 253; }else
+          if (cntRawData_Temp =  OldOilTempCompValues[15]) { oilTemperature = 115; }else
+          if (cntRawData_Temp >= OldOilTempCompValues[14]) { oilTemperature = 110; }else
+          if (cntRawData_Temp >= OldOilTempCompValues[13]) { oilTemperature = 105; }else
+          if (cntRawData_Temp >= OldOilTempCompValues[12]) { oilTemperature = 100; }else
+          if (cntRawData_Temp >= OldOilTempCompValues[11]) { oilTemperature = 95; }else
+          if (cntRawData_Temp >= OldOilTempCompValues[10]) { oilTemperature = 90; }else
+          if (cntRawData_Temp >= OldOilTempCompValues[9]) { oilTemperature = 85; }else
+          if (cntRawData_Temp >= OldOilTempCompValues[8]) { oilTemperature = 80; }else
+          if (cntRawData_Temp >= OldOilTempCompValues[7]) { oilTemperature = 75; }else
+          if (cntRawData_Temp >= OldOilTempCompValues[6]) { oilTemperature = 70; }else
+          if (cntRawData_Temp >= OldOilTempCompValues[5]) { oilTemperature = 65; }else
+          if (cntRawData_Temp >= OldOilTempCompValues[4]) { oilTemperature = 60; }else
+          if (cntRawData_Temp >= OldOilTempCompValues[3]) { oilTemperature = 55; }else
+          if (cntRawData_Temp >= OldOilTempCompValues[2]) { oilTemperature = 50; }else
+          if (cntRawData_Temp >= OldOilTempCompValues[1]) { oilTemperature = 40; }else
+          if (cntRawData_Temp >= OldOilTempCompValues[0]) { oilTemperature = 30; }
         }else{ oilTemperature = OilLevelPercentageErrorValue;}
       }
 
