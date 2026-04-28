@@ -10,11 +10,11 @@
   -etc...
 
   The old Version has the Part Numbers 
-  1J0 907 660 
-  1J0 907 660 A
-  1J0 907 660 B
-  1J0 907 660 C
-  1J0 907 660 F
+  - 1J0 907 660 
+  - 1J0 907 660 A
+  - 1J0 907 660 B
+  - 1J0 907 660 C
+  - 1J0 907 660 F
 
   The old Version has a metal big Plate at the Bottom and the Tube to measure the oil is ONE PIECE and is formed in a rectangular form and NOT Square.
 
