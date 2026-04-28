@@ -468,7 +468,53 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
           SerialBT.print(tempvar);
         } 
         
-      }else{
+      }else
+      /* 0x22 0x06 0x08 */
+      /* get oitemp new sensor */
+      if((receive_BT_Array[1]==0x06) && (receive_BT_Array[2]==0x08))
+      {
+        SerialBT.print(posResponse);
+        SerialBT.print(0x06);
+        SerialBT.print(0x08);                  
+        uint8_t i = 0;
+        uint8_t tempvar;
+        for(i=0;i<sizeof(NewOilTempCompValues);i++)
+        {
+          tempvar = 
+            /* As example testval =         500 == 0x01F4    */
+            /* SerialBT.print(testval >> 8);         -> 0x01 */
+            /* SerialBT.print(testval & 0xFF);       -> 0xF4 */
+          tempvar = (NewOilTempCompValues[i] >> 8) ;
+          SerialBT.print(tempvar);
+          tempvar = (NewOilTempCompValues[i] & 0xFF);
+          SerialBT.print(tempvar);
+        } 
+        
+      }else
+
+      /* 0x22 0x06 0x09 */
+      /* get oitemp new sensor */
+      if((receive_BT_Array[1]==0x06) && (receive_BT_Array[2]==0x09))
+      {
+        SerialBT.print(posResponse);
+        SerialBT.print(0x06);
+        SerialBT.print(0x09);                  
+        uint8_t i = 0;
+        uint8_t tempvar;
+        for(i=0;i<sizeof(NewOilLevelCompValues);i++)
+        {
+          tempvar = 
+            /* As example testval =         500 == 0x01F4    */
+            /* SerialBT.print(testval >> 8);         -> 0x01 */
+            /* SerialBT.print(testval & 0xFF);       -> 0xF4 */
+          tempvar = (NewOilLevelCompValues[i] >> 8) ;
+          SerialBT.print(tempvar);
+          tempvar = (NewOilLevelCompValues[i] & 0xFF);
+          SerialBT.print(tempvar);
+        } 
+        
+      }else
+      {
         SerialBT.print(0x7F);
         SerialBT.print(UDS_READ_DATA_BY_IDENTIFIER);
         SerialBT.print(UDS_NRC_requestOutOfRange);
