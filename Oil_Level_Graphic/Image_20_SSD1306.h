@@ -17,7 +17,7 @@
 *  line scan direction: forward
 *  inverse: no
 *******************************************************************************/
-
+/*This File is for a 128*64 But Display*/
 /*
  typedef struct {
      const uint8_t *data;
