@@ -17,7 +17,9 @@
 *  line scan direction: forward
 *  inverse: no
 *******************************************************************************/
-
+/*
+This File is for a SSD1306 Display 128*64 Bit
+*/
 /*
  typedef struct {
      const uint8_t *data;
