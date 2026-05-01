@@ -114,4 +114,7 @@ The Services 0x2E (WriteDataByIdentifier): has the following Subfunctions
 
 
 The Values of the Graphics were converted woth the tool LCS ASsistent from https://en.radzio.dxp.pl/bitmap_converter/
+
+The Data sheet for the ESP32 comes from 
+https://cdn.shopify.com/s/files/1/1509/1638/files/AZ281_A_18-10_DE_B08BTWJGFX_e699c448-ffc6-4744-8b93-5c9f102d22b0.pdf?v=1721128839
 */
