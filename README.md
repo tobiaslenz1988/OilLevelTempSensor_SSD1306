@@ -111,4 +111,7 @@ The Services 0x2E (WriteDataByIdentifier): has the following Subfunctions
 0x10 0x00 (Set Session to Default Session-> Debug Off, no extra Information Output to Bluetooth)
 0x10 0x03 (Set Session to Extended Session-> Debug On, Information output Output to Bluetooth)
 
+
+
+The Values of the Graphics were converted woth the tool LCS ASsistent from https://en.radzio.dxp.pl/bitmap_converter/
 */
