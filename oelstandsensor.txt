@@ -84,17 +84,17 @@ T1   T2   T3    T4                  T5                    T1
 #include "oilsensor.h"
 #include "NRC_UDS_protocol.h"
 #include "oillevel_ssd1603.h"
-#include "Oil_Level_Graphic/Image_00.h"
-#include "Oil_Level_Graphic/Image_10.h"
-#include "Oil_Level_Graphic/Image_20.h"
-#include "Oil_Level_Graphic/Image_30.h"
-#include "Oil_Level_Graphic/Image_40.h"
-#include "Oil_Level_Graphic/Image_50.h"
-#include "Oil_Level_Graphic/Image_60.h"
-#include "Oil_Level_Graphic/Image_70.h"
-#include "Oil_Level_Graphic/Image_80.h"
-#include "Oil_Level_Graphic/Image_90.h"
-#include "Oil_Level_Graphic/Image_100.h"
+#include "Oil_Level_Graphic/Image_00_SSD1306.h"
+#include "Oil_Level_Graphic/Image_10_SSD1306.h"
+#include "Oil_Level_Graphic/Image_20_SSD1306.h"
+#include "Oil_Level_Graphic/Image_30_SSD1306.h"
+#include "Oil_Level_Graphic/Image_40_SSD1306.h"
+#include "Oil_Level_Graphic/Image_50_SSD1306.h"
+#include "Oil_Level_Graphic/Image_60_SSD1306.h"
+#include "Oil_Level_Graphic/Image_70_SSD1306.h"
+#include "Oil_Level_Graphic/Image_80_SSD1306.h"
+#include "Oil_Level_Graphic/Image_90_SSD1306.h"
+#include "Oil_Level_Graphic/Image_100_SSD1306.h"
 #include "oilsensorled.h"
 
 Preferences preferences;
@@ -143,8 +143,8 @@ uint16_t NewOilLevelCompValues[]        = {New_sensor_OilLevelEmpty,New_sensor_O
 #define ISRfrequency                  1000
 #define TimeoutSignalMS               1500
 #define Buffersize                    25
-#define SCREEN_WIDTH 128
-#define SCREEN_HEIGHT 64
+#define SCREEN_WIDTH                  128
+#define SCREEN_HEIGHT                 64
 
 uint8_t BT_rx_buffer[Buffersize];
 
