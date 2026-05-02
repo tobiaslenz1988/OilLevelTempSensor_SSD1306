@@ -83,8 +83,8 @@ The Services 0x22 (ReadDataByIdentifier): has the following Subfunctions
 - 0x22 0xF1 0xAB                            Read SW-Version                     (Returns the SW Version)
 - 0x22 0xF1 0x87                            Read Debugflag                      (Returns if the Debug is on (true) or not (false))
 - 0x22 0xF1 0x05                            Read Modulename                     (Returns the Name of the Module)
-- 0x22 0x06 0x00 0x??                       Read DebugOilLevelPercentage        Returns the Value of the OilLevel in percent which is used in Debugmode
-- 0x22 0x06 0x01 0x??                       Read DebugOilTemperature            Returns the Value of the OilLevel in Degree Celsius which is used in Debugmode
+- 0x22 0x06 0x00 0x??                       Read DebugOilTemperature            Returns the Value of the OilLevel in Degree Celsius which is used in Debugmode
+- 0x22 0x06 0x01 0x??                       Read DebugOilLevelPercentage        Returns the Value of the OilLevel in percent which is used in Debugmode
 - 0x22 0x06 0x02 0x??                       Read Extra OutputPin                Returns the Status if the extra outputpin is active or not
 - 0x22 0x06 0x03 0x??                       Read New Old SensorFlag             Returns the flag of new or old sensor is equipped (true/0x01 -> New Sensor, false/0x00 -> Oldsensor)
 - 0x22 0x06 0x04 0x??                       Read Real Oil Tempeature            Returns the value of Oiltemperature in Degree celsius which is used from the SW at the Moment
@@ -99,8 +99,8 @@ The Services 0x2E (WriteDataByIdentifier): has the following Subfunctions
 
 - 0x2E 0xF1 0xAB 0x04   0x'' 0x'' 0x'' 0x'' Write SW-Version                     You can write the sw Version... is always 4 ASCIIs therefore the fourth Byte (Byte[3)) has to be always 0x04
 - 0x2E 0xF1 0x05 0xlen  0x'' ..             Write to ModuleName (max.15 chars)   You can write the Modulename... the foruth byte (BYTE[3] consits the length (max. 15)
-- 0x2E 0x06 0x00 0x??                       Write DebugOilLevelPercentage        You can write the DebugValue of OilLevelPercentage ... 
-- 0x2E 0x06 0x01 0x??                       Write DebugOilTemperature            You can write the DebugValue of OilTemperature... 
+- 0x2E 0x06 0x00 0x??                       Write DebugOilTemperature            You can write the DebugValue of OilTemperature... 
+- 0x2E 0x06 0x01 0x??                       Write DebugOilLevelPercentage        You can write the DebugValue of OilLevelPercentage ... 
 - 0x2E 0x06 0x02 0x??                       Write Extra OutputPin                Set The extra Outpin to the desired value 
 - 0x2E 0x06 0x03 0x??                       Write New Old SensorFlag             Set The flag of new or old sensor is equipped 
 - 0x2E 0x06 0x06 0x?? 0x?? 0x?? .....       Write the OilTempCompareValues Old   Sets the Compareimpulsevalues for old Sensor which are used to compare the Oiltemp... starting from Oiltempeatur 30°C...Pay attention the values are uint16_t byte[3] (highbyte) byte[4](lowbyte) tempersture30...
