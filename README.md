@@ -80,17 +80,17 @@ There are the Services:
 
 The Services 0x22 (ReadDataByIdentifier): has the following Subfunctions
 
-- 0x22 0xF1 0xAB Read SW-Version                                               (returns the SW Version)
-- 0x22 0xF1 0x87 Read Debugflag                                                (Returns if the Debug is on (true) or not (false))
-- 0x22 0xF1 0x05 Read Modulename                                               (Returns the Name of the Module)
-- 0x22 0x06 0x00 0x??                       Read DebugOilLevelPercentage        You can write the DebugValue of OilLevelPercentage ...
-- 0x22 0x06 0x01 0x??                       Read DebugOilTemperature            You can write the DebugValue of OilTemperature...
-- 0x22 0x06 0x02 0x??                       Read Extra OutputPin                Get The extra Outpin to the desired value
-- 0x22 0x06 0x03 0x??                       Read New Old SensorFlag             Get The flag of new or old sensor is equipped
-- 0x22 0x06 0x04 0x??                       Read Real Oil Tempeature            Get The evalue of the oil Temperature
-- 0x22 0x06 0x05 0x??                       Read New Old SensorFlag             Get The evalue of the oil Level
-- 0x22 0x06 0x06 0x??                       Read the OilTempCompareValues       Shows which impulsevalues are used to compare the Oiltemp... starting from Oiltempeatur 30°C...Pay attention the values are uint16_t byte[3] (highbyte) byte[4](lowbyte) tempersture30...
-- 0x22 0x06 0x07 0x??                       Read the OilLevelCompareValues      Shows which impulsevalues are used to compare the Oillevel... starting from Oillevel empty...Pay attention the values are uint16_t byte[3] (highbyte) byte[4](lowbyte) oillevel empty...
+- 0x22 0xF1 0xAB                            Read SW-Version                     (Returns the SW Version)
+- 0x22 0xF1 0x87                            Read Debugflag                      (Returns if the Debug is on (true) or not (false))
+- 0x22 0xF1 0x05                            Read Modulename                     (Returns the Name of the Module)
+- 0x22 0x06 0x00 0x??                       Read DebugOilLevelPercentage        Returns the Value of the OilLevel in percent which is used in Debugmode
+- 0x22 0x06 0x01 0x??                       Read DebugOilTemperature            Returns the Value of the OilLevel in Degree Celsius which is used in Debugmode
+- 0x22 0x06 0x02 0x??                       Read Extra OutputPin                Returns the Status if the extra outputpin is active or not
+- 0x22 0x06 0x03 0x??                       Read New Old SensorFlag             Returns the flag of new or old sensor is equipped (true/0x01 -> New Sensor, false/0x00 -> Oldsensor)
+- 0x22 0x06 0x04 0x??                       Read Real Oil Tempeature            Returns the value of Oiltemperature in Degree celsius which is used from the SW at the Moment
+- 0x22 0x06 0x05 0x??                       Read Real Oil Level                 Returns the value of OilLevel in Percent which is used from the SW at the Moment
+- 0x22 0x06 0x06 0x??                       Read the OilTempCompareValues       Returns an array of 2*8bytes * N of Compare impulsevalues, which are used to compare the measured impulses for Temperature with this values.. starting from Oiltempeatur 30°C...Pay attention the values are uint16_t byte[3] (highbyte) byte[4](lowbyte) tempersture30...
+- 0x22 0x06 0x07 0x??                       Read the OilLevelCompareValues      Returns an array of 2*8bytes * N of Compare impulsevalues, which are used to compare the measured impulses for OilLevel with this values..... starting from Oillevel empty...Pay attention the values are uint16_t byte[3] (highbyte) byte[4](lowbyte) oillevel empty...
 
 
 
