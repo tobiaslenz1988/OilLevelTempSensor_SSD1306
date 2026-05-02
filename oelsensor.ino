@@ -402,7 +402,7 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
       
       
       /* 0x22 0x06 0x04 */
-      /* get oilTemperature */
+      /* Returns the OilTemperature  in Degree Celsius which is used by the SW*/
       if((receive_BT_Array[1]==0x06) && (receive_BT_Array[2]==0x04))
       {
         SerialBT.print(posResponse);
@@ -413,7 +413,7 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
       }else
       
       /* 0x22 0x06 0x05 */
-      /* get oilLevelPercentage */
+      /* Returns the Oillevel in percent which is used by the SW*/
       if((receive_BT_Array[1]==0x06) && (receive_BT_Array[2]==0x05))
       {
         SerialBT.print(posResponse);
@@ -424,7 +424,7 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
       }else
       
       /* 0x22 0x06 0x06 */
-      /* get oil temperature compare vlaues */
+      /* get Oiltemperature compare values for OldSensor */
       if((receive_BT_Array[1]==0x06) && (receive_BT_Array[2]==0x06))
       {
         SerialBT.print(posResponse);
@@ -448,7 +448,7 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
       }else
       
       /* 0x22 0x06 0x07 */
-      /* get oilLevel compare values */
+      /* get Oillevel compare values for OldSensor*/
       if((receive_BT_Array[1]==0x06) && (receive_BT_Array[2]==0x07))
       {
         SerialBT.print(posResponse);
@@ -470,7 +470,7 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
         
       }else
       /* 0x22 0x06 0x08 */
-      /* get oitemp new sensor */
+      /* get Oiltemperature compare values for NewSensor */
       if((receive_BT_Array[1]==0x06) && (receive_BT_Array[2]==0x08))
       {
         SerialBT.print(posResponse);
@@ -493,7 +493,7 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
       }else
 
       /* 0x22 0x06 0x09 */
-      /* get oitemp new sensor */
+      /* get OilLevel compare values for NewSensor */
       if((receive_BT_Array[1]==0x06) && (receive_BT_Array[2]==0x09))
       {
         SerialBT.print(posResponse);
@@ -636,7 +636,7 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
       }else
 
       /* This part should set the old sensor new sensor flag
-      /* 0x2E 0x06 0x03 0x!! 0x!!  0x!! 0x!! 0x!!......*/
+      /* 0x2E 0x06 0x03 0x!!......*/
       if((receive_BT_Array[1]==0x06) && (receive_BT_Array[2]==0x03))
       {
 
@@ -654,7 +654,7 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
         SerialBT.print(0x03); 
       }else
 
-      /* This part should set the compare values for LevTemperature
+      /* This part should set the compare values for OilTemperature of old Sensor
       /* 0x2E 0x06 0x06 0x!! 0x!!  0x!! 0x!! 0x!!......*/
       if((receive_BT_Array[1]==0x06) && (receive_BT_Array[2]==0x06))
       {
@@ -700,7 +700,7 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
         SerialBT.print(0x06);
         SerialBT.print(0x06); 
       }else
-       /* This part should set the compare values for Level old sensor
+       /* This part should set the compare values for Oillevel old sensor
       /* 0x2E 0x06 0x07 0x!! 0x!!  0x!! 0x!! 0x!!......*/
       if((receive_BT_Array[1]==0x06) && (receive_BT_Array[2]==0x07))
       {
@@ -736,7 +736,7 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
         SerialBT.print(0x07); 
       }else
 
-      /* This part should set the compare values for LevTemperature
+      /* This part should set the compare values for Oiltemperatur New sensor
       /* 0x2E 0x06 0x08 0x!! 0x!!  0x!! 0x!! 0x!!......*/
       if((receive_BT_Array[1]==0x06) && (receive_BT_Array[2]==0x08))
       {
@@ -783,7 +783,7 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
         SerialBT.print(0x08); 
       }else
 
-      /* This part should set the compare values for Level new Sensor
+      /* This part should set the compare values for Oillevel new sensor
       /* 0x2E 0x06 0x09 0x!! 0x!!  0x!! 0x!! 0x!!......*/
       if((receive_BT_Array[1]==0x06) && (receive_BT_Array[2]==0x09))
       {
