@@ -83,7 +83,6 @@ T1   T2   T3    T4                  T5                    T1
 #include <Adafruit_SSD1306.h>
 #include "oilsensor.h"
 #include "NRC_UDS_protocol.h"
-//#include "oillevel_ssd1603.h"
 #include "Oil_Level_Graphic/Image_00_SSD1306_14_50_inv.h"
 #include "Oil_Level_Graphic/Image_10_SSD1306_14_50_inv.h"
 #include "Oil_Level_Graphic/Image_20_SSD1306_14_50_inv.h"
@@ -95,7 +94,12 @@ T1   T2   T3    T4                  T5                    T1
 #include "Oil_Level_Graphic/Image_80_SSD1306_14_50_inv.h"
 #include "Oil_Level_Graphic/Image_90_SSD1306_14_50_inv.h"
 #include "Oil_Level_Graphic/Image_100_SSD1306_14_50_inv.h"
+#include "Oil_Level_Graphic/audi_logoo.h"
+#include "Oil_Level_Graphic/vw_logoo.h"
+#include "Oil_Level_Graphic/gtr_logoo.h"
+#include "Oil_Level_Graphic/chevy_logoo.h"
 #include "oilsensorled.h"
+#include "brand_defines.h"
 
 Preferences preferences;
 BluetoothSerial SerialBT;
@@ -112,7 +116,7 @@ uint8_t oilTemperature                  = OilTemperaturePercentageInitValue; /*i
 uint8_t oilLevelPercentage              = OilLevelPercentageInitValue; /*init value 254*/
 uint8_t testValue_oilTemperature        = 85; /* Debugvalue 255 */
 uint8_t testValue_oilLevelPercentage    = 60; /* Debugvalue 255 */
-
+uint8_t brand                           = 0;
 uint8_t sequenceCounter                 = 0;
 uint8_t startingsequence[]              = {0,50,100,50,0};
 hw_timer_t *timer                       = NULL;
@@ -518,18 +522,24 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
           tempvar = (NewOilLevelCompValues[i] & 0xFF);
           SerialBT.write(tempvar);
         } 
-        
-      }else
+      }
+      else
+
+      /* 0x22 0x06 0x0A */
+      /* get the Brandvalue */
+      if((receive_BT_Array[1]==0x06) && (receive_BT_Array[2]==0x0A))
+      {
+        SerialBT.write(posResponse);
+        SerialBT.write(0x06);
+        SerialBT.write(0x0A);                  
+        SerialBT.write(brand);
+      }
+      else
       {
         SerialBT.write(0x7F);
         SerialBT.write(UDS_READ_DATA_BY_IDENTIFIER);
         SerialBT.write(UDS_NRC_requestOutOfRange);
       }
-    
-    
-    
-    
-    
     
     }else
 
@@ -822,8 +832,23 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
         SerialBT.write(posResponse);
         SerialBT.write(0x06);
         SerialBT.write(0x09); 
-      }else
-      
+      }
+      else /* This part should set brand for the startuplogo
+      /* 0x2E 0x06 0x0A 0x!! */
+      if((receive_BT_Array[1]==0x06) && (receive_BT_Array[2]==0x0A))
+      {
+
+        preferences.begin(EEPROMNameSpace, false); 
+        uint8_t temp =  (uint8_t) receive_BT_Array[3];
+        brand = temp;
+        preferences.putUChar("Brand",temp);
+        preferences.end();
+        
+        SerialBT.write(posResponse);
+        SerialBT.write(0x06);
+        SerialBT.write(0x0A); 
+      }
+      else
       {
         SerialBT.write(0x7F);
         SerialBT.write(UDS_WRITE_DATA_BY_IDENTIFIER);
@@ -889,7 +914,7 @@ void showOilLevelAtDisplay(uint8_t percentageOillevel,bool initflag)
     /* Oillevel Ok */
     if(percentageOillevel >= 20){
       /* Design Reason Background is Dark all Text is White*/
-      display.clearDisplay();
+      //display.clearDisplay();
       if(percentageOillevel == 20){ display.drawBitmap(OFFSET_X, OFFSET_Y, image_OilLevel_20, BITMAP_WIDTH, BITMAP_HEIGHT, 1);} else
       if(percentageOillevel == 30){ display.drawBitmap(OFFSET_X, OFFSET_Y, image_OilLevel_30, BITMAP_WIDTH, BITMAP_HEIGHT, 1);} else
       if(percentageOillevel == 40){ display.drawBitmap(OFFSET_X, OFFSET_Y, image_OilLevel_40, BITMAP_WIDTH, BITMAP_HEIGHT, 1);} else
@@ -986,18 +1011,23 @@ void showOilLevelAtDisplay(uint8_t percentageOillevel,bool initflag)
 
 void controlOfDisplay()
 {
+  display.clearDisplay();
   if ((sequenceCounter>=8) && (sequenceCounter<=15) )
   {
     showOilLevelAtDisplay(oilLevelPercentage,false);
   } 
   /* short initialization sequence*/
-  if((sequenceCounter>=3) && (sequenceCounter<=7))
+  if((sequenceCounter>=2) && (sequenceCounter<=7))
   {
-    showOilLevelAtDisplay(startingsequence[sequenceCounter-3],true);
+    //showOilLevelAtDisplay(startingsequence[sequenceCounter-3],true);
+    //display.drawBitmap(12, 13, image_logo, 102, 35, 1);
+
+    showBrandLogo(brand);
+
     sequenceCounter = sequenceCounter+1;
   }
   /* perform a short Delay*/
-  if((sequenceCounter<3))
+  if((sequenceCounter<2))
   {
     sequenceCounter = sequenceCounter+1;
   }
@@ -1077,17 +1107,58 @@ void readEepromValues()
   NewOilLevelCompValues[9] = preferences.getUShort("New_sensor_OilLevel_90",New_sensor_OilLevel_90);
   NewOilLevelCompValues[10] = preferences.getUShort("New_sensor_OilLevelFull",New_sensor_OilLevelFull);
 
+
+  
+  brand = preferences.getUChar("Brand",BRAND_AUDI);
   preferences.end();
 }
 
-
+void showBrandLogo(uint8_t brandvalue)
+{
+  display.clearDisplay();
+  if(brandvalue == BRAND_VW){
+    display.drawBitmap(12, 13, image_vw_logo, 102, 35, 1);
+  }else if(brandvalue == BRAND_AUDI){
+    display.drawBitmap(12, 13, image_audi_logo, 102, 35, 1);
+  }else if(brandvalue == BRAND_AUDI_QUATTRO){
+    display.drawBitmap(12, 2, image_audi_logo, 102, 35, 1);
+    display.setTextSize(2);
+    display.setCursor(25, 44);
+    display.print("Quattro");
+  }else if(brandvalue == BRAND_AUDI_1_8T){
+    display.drawBitmap(12, 2, image_audi_logo, 102, 35, 1);
+    display.setTextSize(2);
+    display.setCursor(20, 44);
+    display.print("1.8T 20V");
+  }else if(brandvalue == BRAND_AUDI_QUATTRO_1_8T){
+    display.drawBitmap(12, 2, image_audi_logo, 102, 35, 1);
+    display.setTextSize(2);
+    if(sequenceCounter<5)
+    {
+      display.setCursor(25, 44);
+      display.print("Quattro");
+    }
+    else
+    {
+      display.setCursor(20, 44);
+      display.print("1.8T 20V");
+    }
+  }else if(brandvalue == BRAND_NISSA_GTT){
+    display.drawBitmap(12, 13, image_gtt_logo, 102, 34, 1);
+  }else if(brandvalue == BRAND_CHEVY){
+    display.drawBitmap(12, 13, image_chevy_logo, 102, 36, 1);
+  }else if(brandvalue == BRAND_Init){
+    showOilLevelAtDisplay(startingsequence[sequenceCounter-3],true);
+  }
+    display.display();
+}
 
 void setup() {
   readEepromValues();
   if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
     for(;;);
   }
-
+  display.clearDisplay();
   delay(1000);
   //start serial connection
   SerialBT.begin(Modulename);
@@ -1122,7 +1193,11 @@ void setup() {
   display.setTextColor(WHITE);
 
   /* clear display for startup*/
-  display.clearDisplay();
+  
+  //display.dim(false);
+  display.ssd1306_command(SSD1306_SETCONTRAST);
+  display.ssd1306_command(1); 
+
 }
 
 
