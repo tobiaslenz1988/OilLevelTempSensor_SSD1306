@@ -910,9 +910,23 @@ void showOilLevelAtDisplay(uint8_t percentageOillevel,bool initflag)
 
 
       display.setTextSize(3);
-      display.setCursor(38, 21);
+      display.setCursor(38, 20);
   
       display.print(oilTemperature);
+
+      if(oilTemperature >= 100)
+      {
+        display.setCursor(93, 8);
+        display.print(char(248));
+         display.setCursor(110, 20);
+        display.print('C');
+
+      }else{
+        display.setCursor(76, 8);
+        display.print(char(248));
+        display.setCursor(94, 20);
+        display.print('C');
+      }
 
       display.display();
     }else{
