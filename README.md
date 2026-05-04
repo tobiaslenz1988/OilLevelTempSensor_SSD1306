@@ -93,7 +93,7 @@ The Services 0x22 (ReadDataByIdentifier): has the following Subfunctions
 - 0x22 0x06 0x07 0x??                       Read the OilLevelCompareValues      Returns an array of 2*8bytes * N of Compare impulsevalues for old Sensor, which are used to compare the measured impulses for OilLevel with this values..... starting from Oillevel empty...Pay attention the values are uint16_t byte[3] (highbyte) byte[4](lowbyte) oillevel empty...
 - 0x22 0x06 0x08 0x??                       Read the OilTempCompareValues       Returns an array of 2*8bytes * N of Compare impulsevalues for new Sensor, which are used to compare the measured impulses for Temperature with this values.. starting from Oiltempeatur 30°C...Pay attention the values are uint16_t byte[3] (highbyte) byte[4](lowbyte) tempersture30...
 - 0x22 0x06 0x09 0x??                       Read the OilLevelCompareValues      Returns an array of 2*8bytes * N of Compare impulsevalues for new Sensor, which are used to compare the measured impulses for OilLevel with this values..... starting from Oillevel empty...Pay attention the values are uint16_t byte[3] (highbyte) byte[4](lowbyte) oillevel empty...
-
+- 0x22 0x06 0x0A                            Read which brand is used            returns the used Brand
 
 The Services 0x2E (WriteDataByIdentifier): has the following Subfunctions
 
@@ -107,7 +107,16 @@ The Services 0x2E (WriteDataByIdentifier): has the following Subfunctions
 - 0x2E 0x06 0x07 0x?? 0x?? 0x?? .....       Write the OilLevelCompareValues Old  Sets the Compareimpulsevalues for old Sensor which are used to compare the Oillevel... starting from Oillevel empty...Pay attention the values are uint16_t byte[3] (highbyte) byte[4](lowbyte) oillevel empty...
 - 0x2E 0x06 0x08 0x?? 0x?? 0x?? .....       Write the OilTempCompareValues New   Sets the Compareimpulsevalues for new Sensor which are used to compare the Oiltemp... starting from Oiltempeatur 30°C...Pay attention the values are uint16_t byte[3] (highbyte) byte[4](lowbyte) tempersture30...
 - 0x2E 0x06 0x09 0x?? 0x?? 0x?? .....       Write the OilLevelCompareValues New  Sets the Compareimpulsevalues for new Sensor which are used to compare the Oillevel... starting from Oillevel empty...Pay attention the values are uint16_t byte[3] (highbyte) byte[4](lowbyte) oillevel empty...
-
+- 0x2E 0x06 0x0A 0x??
+  You can Write different brands defined in brands_defines.h
+#define BRAND_Init					    0x00
+#define BRAND_AUDI					    0x01
+#define BRAND_AUDI_QUATTRO			0x02
+#define BRAND_AUDI_1_8T				  0x03
+#define BRAND_VW				        0x04
+#define BRAND_CHEVY					    0x05
+#define	BRAND_NISSAN_GTT			  0x06
+#define BRAND_NISSAN_Skyline	  0x07
 
 
 0x10 (SessionControl):
