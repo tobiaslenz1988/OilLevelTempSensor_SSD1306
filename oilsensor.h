@@ -89,6 +89,6 @@ extern uint8_t testValue_oilTemperature;
 extern uint8_t testValue_oilLevelPercentage;
 extern uint16_t OilOldLevelCompareValues[];
 extern uint16_t OilOldTemperatureCompareValues[];
-void convertImpulseToPercentage(uint16_t cntRawData_Temp, uint16_t cntRawData_Level,bool debugFlag);
+void convertImpulseToPercentage(uint16_t cntRawData_Temp, uint16_t cntRawData_Level,uint8_t session);
 
 #endif /* OILSENSOR_H */

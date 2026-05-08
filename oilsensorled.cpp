@@ -10,12 +10,6 @@
 
 
 
-
-
-
-
-
-
 bool showLevelAndTempAtLED(bool OldToggleValue, uint8_t oilLevelPercentage,uint8_t oilTemperature)
 {
   bool toggle = OldToggleValue;

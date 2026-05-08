@@ -22,7 +22,7 @@ extern uint16_t NewOilLevelCompValues[];
 
 
 /* This methods converts the received impulses to an Percentage for OilLevel and Oil Temperature*/
-void convertImpulseToPercentage(uint16_t cntRawData_Temp, uint16_t cntRawData_Level,bool debugFlag) {
+void convertImpulseToPercentage(uint16_t cntRawData_Temp, uint16_t cntRawData_Level,uint8_t session) {
   if (debugFlag == false) 
   { /* Debug of... normal Operation*/
     if(TimeoutSensorDetected == false)

@@ -42,8 +42,9 @@
  #define UDS_READ_DATA_BY_IDENTIFIER 					0x22
  #define UDS_ROUTING 									0x44
  #define UDS_Session_Control							0x10
- #define UDS_Session_Control_Default_Session			0x00
- #define UDS_Session_Control_Programming_Session		0x02 
+ #define UDS_Session_Control_Default_Session	    	0x01
+ #define UDS_Session_Control_Programming_Session	   	0x02 
  #define UDS_Session_Control_Extended_Session			0x03
+ #define UDS_Session_Control_Development_Session		0x40
  
  #define HEXCODE_BIT1_READ_IDENT 0xF1
