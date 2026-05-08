@@ -94,12 +94,12 @@ T1   T2   T3    T4                  T5                    T1
 #include "Oil_Level_Graphic/Image_80_SSD1306_14_50_inv.h"
 #include "Oil_Level_Graphic/Image_90_SSD1306_14_50_inv.h"
 #include "Oil_Level_Graphic/Image_100_SSD1306_14_50_inv.h"
-#include "Oil_Level_Graphic/audi_logoo.h"
-#include "Oil_Level_Graphic/vw_logoo.h"
-#include "Oil_Level_Graphic/gtr_logoo.h"
-#include "Oil_Level_Graphic/chevy_logoo.h"
+#include "logos/audi_logoo.h"
+#include "logos/vw_logoo.h"
+#include "logos/gtr_logoo.h"
+#include "logos/chevy_logoo.h"
 #include "oilsensorled.h"
-#include "brand_defines.h"
+#include "logos/brand_defines.h"
 
 Preferences preferences;
 BluetoothSerial SerialBT;
@@ -107,7 +107,7 @@ bool Impuls_1_High                      = false;
 bool Impuls_1_Low                       = false;
 bool Impuls_2_High                      = false;
 bool Impuls_2_Low                       = false;
-bool debugFlag                          = false;
+uint8_t session                         = UDS_Session_Control_Default_Session;
 bool NewOilSensorEquipped               = false;
 bool toggleflag                         = false;
 uint8_t signalinput                     = 0;
@@ -124,9 +124,9 @@ static uint16_t                         cntRawArr[4];
 static uint16_t                         returnArray[4];
 bool TempToggle                         = false;
 bool TimeoutSensorDetected              = true;
-char SoftwareVersion[]                  = "X003";       
+   
 portMUX_TYPE timerMux                   = portMUX_INITIALIZER_UNLOCKED;
-char  Modulename[]                      = "OilSensor";
+char  Modulename[]                      = "OilSensor2";
 bool NewData                            = false;
 bool statusOfExtraOutputPin             = false;
 bool toggleInvertDisplayFlag            = false;
@@ -155,8 +155,10 @@ uint16_t NewOilLevelCompValues[]        = {New_sensor_OilLevelEmpty,New_sensor_O
 
 #define OFFSET_X                      4
 #define OFFSET_Y                      5
+#define SOFTWAREVERSION               "X005"
 
 uint8_t BT_rx_buffer[Buffersize];
+char SoftwareVersion[]                  = SOFTWAREVERSION;
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 
@@ -282,9 +284,8 @@ void delete_BT_buffer()
 }
 
 
-
 void sendInfosToBT(uint8_t temperature, uint8_t OilLevel,uint16_t outputarr[]) {
-  if (debugFlag == true)
+  if (session == UDS_Session_Control_Development_Session)
   {
     uint8_t i;
     //Serial.write(0xFF);
@@ -309,17 +310,19 @@ void sendInfosToBT(uint8_t temperature, uint8_t OilLevel,uint16_t outputarr[]) {
     SerialBT.print("Softwareversion");
     String stri = SoftwareVersion;
     SerialBT.println(stri);
+  
     SerialBT.print("Sensor TO detected: ");
     SerialBT.println(TimeoutSensorDetected);
-    SerialBT.print("SequenceCounter");
-    SerialBT.println(sequenceCounter);
+    SerialBT.print("startUpCounter");
+    SerialBT.println(startUpCounter);
+ 
+    SerialBT.print("Temperature: ");
+    SerialBT.println(temperature);
+    SerialBT.print("OilLevel: ");
+    SerialBT.println(OilLevel);
+    delay(1000);
   }
-  SerialBT.print("Temperature: ");
-  SerialBT.println(temperature);
-  SerialBT.print("OilLevel: ");
-  SerialBT.println(OilLevel);
 }
-
 
 void analyse_BT_Protocol(uint8_t receive_BT_Array[])
 {   
@@ -348,7 +351,7 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
         SerialBT.write(posResponse);
         SerialBT.write(0xF1);
         SerialBT.write(0x87); 
-        SerialBT.write(debugFlag);
+        SerialBT.write(session);
       }else
 
       /* 0x22 0xF1 0x05 */
@@ -859,31 +862,21 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
     /* Session Control */
     if(receive_BT_Array[0] == UDS_Session_Control)
     {
-      if(receive_BT_Array[1] == UDS_Session_Control_Default_Session)
-      {
-          
-          if(debugFlag != false)
+      if((receive_BT_Array[1] == UDS_Session_Control_Default_Session)||(receive_BT_Array[1] == UDS_Session_Control_Extended_Session)||(receive_BT_Array[1] == UDS_Session_Control_Development_Session))
+      {    
+          if(session != receive_BT_Array[1])
           {
-            debugFlag = false;
+            session = receive_BT_Array[1];
             preferences.begin(EEPROMNameSpace, false); 
-            preferences.putBool("debugflag",false);
+            preferences.putUChar("session",receive_BT_Array[1]);
             preferences.end();
           }
-          
-      } else if(receive_BT_Array[1] == UDS_Session_Control_Extended_Session)
-      {
-          if(debugFlag != true)
-          {
-            debugFlag = true;
-            preferences.begin(EEPROMNameSpace, false); 
-            preferences.putBool("debugflag",true);
-            preferences.end();
-          }
+          SerialBT.write(0x50);
       }else{
         SerialBT.write(0x7F);
         SerialBT.write(UDS_Session_Control);
         SerialBT.write(UDS_NRC_subFunctionNotSupported);
-      }
+      }   
     }else{
         SerialBT.write(0x7F);
         SerialBT.write(receive_BT_Array[0]);
@@ -907,8 +900,8 @@ void showOilLevelAtDisplay(uint8_t percentageOillevel,bool initflag)
 {
   // Clear the buffer.
   display.clearDisplay();
-  if((TimeoutSensorDetected == false) || ((TimeoutSensorDetected == true) && (debugFlag == true)) )
-  {  
+  if((TimeoutSensorDetected == false) || ( ((TimeoutSensorDetected == true) && (session == UDS_Session_Control_Extended_Session)) || ((TimeoutSensorDetected == true) && (session == UDS_Session_Control_Development_Session))) )
+  { 
       //if(percentageOillevel == 00){display.drawBitmap(0, 0, image_OilLevel_00, 128, 64, 1);} else
       //if(percentageOillevel == 10){ display.drawBitmap(0, 0, image_OilLevel_10, 128, 64, 1);} else
     /* Oillevel Ok */
@@ -1038,14 +1031,17 @@ void readEepromValues()
   preferences.clear();
   preferences.begin(EEPROMNameSpace, false);
     
-  debugFlag             = preferences.getBool("debugflag",false);
+  session               = preferences.getUChar("session",UDS_Session_Control_Default_Session);
   NewOilSensorEquipped  = preferences.getBool("NewSensorflag",false);
 
-  String temp = preferences.getString("SW_Version","1234");
-  uint8_t leng = temp.length() +1;
+  String temp;
+  uint8_t leng;
+  /*
+  temp = preferences.getString("SW_Version","X004");
+  leng = temp.length() +1;
   temp.toCharArray(SoftwareVersion, leng);
-
-  temp = preferences.getString("Modulename","Sensor");
+  */
+  temp = preferences.getString("Modulename","Sensor2");
   leng = temp.length() +1;
   temp.toCharArray(Modulename, leng);
   
@@ -1130,20 +1126,14 @@ void showBrandLogo(uint8_t brandvalue)
     display.setTextSize(2);
     display.setCursor(20, 44);
     display.print("1.8T 20V");
-  }else if(brandvalue == BRAND_AUDI_QUATTRO_1_8T){
-    display.drawBitmap(12, 2, image_audi_logo, 102, 35, 1);
+  }else if(brandvalue == BRAND_NISSAN_Skyline){
     display.setTextSize(2);
-    if(sequenceCounter<5)
-    {
-      display.setCursor(25, 44);
-      display.print("Quattro");
-    }
-    else
-    {
-      display.setCursor(20, 44);
-      display.print("1.8T 20V");
-    }
-  }else if(brandvalue == BRAND_NISSA_GTT){
+    display.setCursor(27, 10);
+    display.print("Nissan");
+    display.setTextSize(2);
+    display.setCursor(23, 38);
+     display.print("SKYLINE");
+  }else if(brandvalue == BRAND_NISSAN_GTT){
     display.drawBitmap(12, 13, image_gtt_logo, 102, 34, 1);
   }else if(brandvalue == BRAND_CHEVY){
     display.drawBitmap(12, 13, image_chevy_logo, 102, 36, 1);
@@ -1206,7 +1196,7 @@ void loop() {
   orderImpulse(cntRawArr);
   portEXIT_CRITICAL(&timerMux);
 
-  convertImpulseToPercentage(returnArray[1], returnArray[3],debugFlag);
+  convertImpulseToPercentage(returnArray[1], returnArray[3],session);
   sendInfosToBT(oilTemperature, oilLevelPercentage,returnArray);
   //TempToggle = showLevelAndTempAtLED(TempToggle,oilLevelPercentage,oilTemperature);
   analyse_BT_Protocol(BT_rx_buffer);
