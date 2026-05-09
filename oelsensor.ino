@@ -586,8 +586,8 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
 
 
       /* This part should change the name of the BT Module*/
-      /* 0x2E 0xF1 0x05 0x?? 0x!!  0x!! 0x!! 0x!!......*/
-      if((receive_BT_Array[1]==0xF1) && (receive_BT_Array[2]==0x05))
+      /* 0x2E 0xF1 0x97 0x?? 0x!!  0x!! 0x!! 0x!!......*/
+      if((receive_BT_Array[1]==0xF1) && (receive_BT_Array[2]==0x97))
       {
         uint8_t length_of_name = receive_BT_Array[3];
         if((0<length_of_name) && (length_of_name<=15))
@@ -615,7 +615,7 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
 
           SerialBT.write(posResponse);
           SerialBT.write(0xF1);
-          SerialBT.write(0x05); 
+          SerialBT.write(0x97); 
         }else{
           SerialBT.write(0x7F);
           SerialBT.write(UDS_WRITE_DATA_BY_IDENTIFIER);
