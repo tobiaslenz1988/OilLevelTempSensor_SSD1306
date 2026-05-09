@@ -354,13 +354,13 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
         SerialBT.write(session);
       }else
 
-      /* 0x22 0xF1 0x05 */
+      /* 0x22 0xF1 0x97 */
       /* get Modulename */
-      if((receive_BT_Array[1]==0xF1) && (receive_BT_Array[2]==0x05))
+      if((receive_BT_Array[1]==0xF1) && (receive_BT_Array[2]==0x97))
       {
         SerialBT.write(posResponse);
         SerialBT.write(0xF1);
-        SerialBT.write(0x05);
+        SerialBT.write(0x97);
         for(int i=0;i<sizeof(Modulename);i++)
         {
             SerialBT.write(Modulename[i]);
