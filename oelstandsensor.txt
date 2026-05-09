@@ -344,13 +344,13 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
         SerialBT.write(SoftwareVersion[3]);
       }else
 
-      /* 0x22 0xF1 0x87 */
-      /* Get Debug Flag */
-      if((receive_BT_Array[1]==0xF1) && (receive_BT_Array[2]==0x87))
+      /* 0x22 0xF1 0x86 */
+      /* Get actual Session */
+      if((receive_BT_Array[1]==0xF1) && (receive_BT_Array[2]==0x86))
       {
         SerialBT.write(posResponse);
         SerialBT.write(0xF1);
-        SerialBT.write(0x87); 
+        SerialBT.write(0x86); 
         SerialBT.write(session);
       }else
 
@@ -934,12 +934,14 @@ void showOilLevelAtDisplay(uint8_t percentageOillevel,bool initflag)
 
       if(oilTemperature >= 100)
       {
+        display.setTextColor(RED)
         display.setCursor(93, 8);
         display.print(char(248));
-         display.setCursor(110, 20);
+        display.setCursor(110, 20);
         display.print('C');
 
       }else{
+         display.setTextColor(WHITE)
         display.setCursor(76, 8);
         display.print(char(248));
         display.setCursor(94, 20);
