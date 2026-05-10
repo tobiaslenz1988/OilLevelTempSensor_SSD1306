@@ -445,9 +445,9 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
         SerialBT.write(0x06); 
         uint8_t i = 0;
         uint8_t tempvar;
-        for(i=0;i<sizeof(OldOilTempCompValues);i++)
+        uint8_t sizeOfArr = sizeof(OldOilTempCompValues) / sizeof(OldOilTempCompValues[0]);
+        for(i=0;i<sizeOfArr;i++)
         {
-          tempvar = 
             /* As example testval =         500 == 0x01F4    */
             /* SerialBT.write(testval >> 8);         -> 0x01 */
             /* SerialBT.write(testval & 0xFF);       -> 0xF4 */
@@ -469,9 +469,9 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
         SerialBT.write(0x07);                  
         uint8_t i = 0;
         uint8_t tempvar;
-        for(i=0;i<sizeof(OldOilLevelCompValues);i++)
+        uint8_t sizeOfArr = sizeof(OldOilLevelCompValues) / sizeof(OldOilLevelCompValues[0]);
+        for(i=0;i<sizeOfArr;i++)
         {
-          tempvar = 
             /* As example testval =         500 == 0x01F4    */
             /* SerialBT.write(testval >> 8);         -> 0x01 */
             /* SerialBT.write(testval & 0xFF);       -> 0xF4 */
@@ -491,9 +491,9 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
         SerialBT.write(0x08);                  
         uint8_t i = 0;
         uint8_t tempvar;
-        for(i=0;i<sizeof(NewOilTempCompValues);i++)
+        uint8_t sizeOfArr = sizeof(NewOilTempCompValues) / sizeof(NewOilTempCompValues[0]);
+        for(i=0;i<sizeOfArr;i++)
         {
-          tempvar = 
             /* As example testval =         500 == 0x01F4    */
             /* SerialBT.write(testval >> 8);         -> 0x01 */
             /* SerialBT.write(testval & 0xFF);       -> 0xF4 */
@@ -514,9 +514,9 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
         SerialBT.write(0x09);                  
         uint8_t i = 0;
         uint8_t tempvar;
-        for(i=0;i<sizeof(NewOilLevelCompValues);i++)
+        uint8_t sizeOfArr = sizeof(NewOilLevelCompValues) / sizeof(NewOilLevelCompValues[0]);
+        for(i=0;i<sizeOfArr;i++)
         {
-          tempvar = 
             /* As example testval =         500 == 0x01F4    */
             /* SerialBT.write(testval >> 8);         -> 0x01 */
             /* SerialBT.write(testval & 0xFF);       -> 0xF4 */
