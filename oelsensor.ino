@@ -241,8 +241,8 @@ void  orderImpulse(uint16_t inputArr[]) {
   /* This Method orders the measured impulses into the correct sequence..*/
   /* There might be the case that the Uc starts at the wrong Time and interprets T4 (see at ine 71) as the start of the sequence ..*/
   /* This method returns a sequence of Four measured where the beginning of the Signal is always stored in returnArray[0] */
-  /* SerialBT.write(testval >> 8);         -> 0x01 */
-  /* SerialBT.write(testval & 0xFF);       -> 0xF4 */
+  /* BUS_output(testval >> 8);         -> 0x01 */
+  /* BUS_output(testval & 0xFF);       -> 0xF4 */
  
   uint16_t tempArray[4];
   tempArray[0] = inputArr[0];

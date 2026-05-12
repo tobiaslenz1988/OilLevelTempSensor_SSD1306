@@ -6,6 +6,7 @@
 #include <BluetoothSerial.h>
 #include <Preferences.h>
 #include  "uds_statemachine.h"
+#include "Bus.h"
 
 extern Preferences preferences;
 extern BluetoothSerial SerialBT;
@@ -34,42 +35,42 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
       /* Get SW Version*/
       if((receive_BT_Array[1]==0xF1) && (receive_BT_Array[2]==0xAB))
       {
-        SerialBT.write(posResponse);
-        SerialBT.write(0xF1);
-        SerialBT.write(0xAB); 
-        SerialBT.write(SoftwareVersion[0]);
-        SerialBT.write(SoftwareVersion[1]);
-        SerialBT.write(SoftwareVersion[2]);
-        SerialBT.write(SoftwareVersion[3]);
+        BUS_output(posResponse);
+        BUS_output(0xF1);
+        BUS_output(0xAB); 
+        BUS_output(SoftwareVersion[0]);
+        BUS_output(SoftwareVersion[1]);
+        BUS_output(SoftwareVersion[2]);
+        BUS_output(SoftwareVersion[3]);
       }else
 
       /* 0x22 0xF1 0x86 */
       /* Get actual Sesion */
       if((receive_BT_Array[1]==0xF1) && (receive_BT_Array[2]==0x86))
       {
-        SerialBT.write(posResponse);
-        SerialBT.write(0xF1);
-        SerialBT.write(0x86); 
-        SerialBT.write(session);
+        BUS_output(posResponse);
+        BUS_output(0xF1);
+        BUS_output(0x86); 
+        BUS_output(session);
       }else
 
       /* 0x22 0xF1 0x97 */
       /* get Systemname */
       if((receive_BT_Array[1]==0xF1) && (receive_BT_Array[2]==0x97))
       {
-        SerialBT.write(posResponse);
-        SerialBT.write(0xF1);
-        SerialBT.write(0x97);
+        BUS_output(posResponse);
+        BUS_output(0xF1);
+        BUS_output(0x97);
 
         
   
         //temp.toCharArray(Modulename, leng);
-        //SerialBT.write(temp);
+        //BUS_output(temp);
         uint8_t sizeOfArr = sizeof(Modulename) / sizeof(Modulename[0]);
         uint8_t i;
         while(Modulename[i] != 0x00)
         {
-          SerialBT.write(Modulename[i]);
+          BUS_output(Modulename[i]);
           i=i+1;
         }
         
@@ -79,10 +80,10 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
       /* This part should get the Debugvalue for the OilTemperature */
       if((receive_BT_Array[1]==0x06) && (receive_BT_Array[2]==0x00))
       {
-        SerialBT.write(posResponse);
-        SerialBT.write(0x06);
-        SerialBT.write(0x00);                  
-        SerialBT.write(testValue_oilTemperature);
+        BUS_output(posResponse);
+        BUS_output(0x06);
+        BUS_output(0x00);                  
+        BUS_output(testValue_oilTemperature);
         
       }else
 
@@ -90,10 +91,10 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
        /* This part should get the Debugvalue for the OilLevel */
       if((receive_BT_Array[1]==0x06) && (receive_BT_Array[2]==0x01))
       {
-        SerialBT.write(posResponse);
-        SerialBT.write(0x06);
-        SerialBT.write(0x01);                  
-        SerialBT.write(testValue_oilLevelPercentage);
+        BUS_output(posResponse);
+        BUS_output(0x06);
+        BUS_output(0x01);                  
+        BUS_output(testValue_oilLevelPercentage);
         
       }else
       
@@ -102,10 +103,10 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
       /* Returns the OilTemperature  in Degree Celsius which is used by the SW*/
       if((receive_BT_Array[1]==0x06) && (receive_BT_Array[2]==0x02))
       {
-        SerialBT.write(posResponse);
-        SerialBT.write(0x06);
-        SerialBT.write(0x02);                  
-        SerialBT.write(oilTemperature);
+        BUS_output(posResponse);
+        BUS_output(0x06);
+        BUS_output(0x02);                  
+        BUS_output(oilTemperature);
         
       }else
       
@@ -113,10 +114,10 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
       /* Returns the Oillevel in percent which is used by the SW*/
       if((receive_BT_Array[1]==0x06) && (receive_BT_Array[2]==0x03))
       {
-        SerialBT.write(posResponse);
-        SerialBT.write(0x06);
-        SerialBT.write(0x03);                  
-        SerialBT.write(oilLevelPercentage);
+        BUS_output(posResponse);
+        BUS_output(0x06);
+        BUS_output(0x03);                  
+        BUS_output(oilLevelPercentage);
         
       }else
       
@@ -124,9 +125,9 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
       /* get Oiltemperature compare values for OldSensor */
       if((receive_BT_Array[1]==0x06) && (receive_BT_Array[2]==0x04))
       {
-        SerialBT.write(posResponse);
-        SerialBT.write(0x06);
-        SerialBT.write(0x04); 
+        BUS_output(posResponse);
+        BUS_output(0x06);
+        BUS_output(0x04); 
         uint8_t i = 0;
         uint8_t tempvar;
         uint8_t sizeOfArr = sizeof(OldOilTempCompValues) / sizeof(OldOilTempCompValues[0]);
@@ -134,12 +135,12 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
         {
 
             /* As example testval =         500 == 0x01F4    */
-            /* SerialBT.write(testval >> 8);         -> 0x01 */
-            /* SerialBT.write(testval & 0xFF);       -> 0xF4 */
+            /* BUS_output(testval >> 8);         -> 0x01 */
+            /* BUS_output(testval & 0xFF);       -> 0xF4 */
           tempvar = (OldOilTempCompValues[i] >> 8) ;
-          SerialBT.write(tempvar);
+          BUS_output(tempvar);
           tempvar = (OldOilTempCompValues[i] & 0xFF);
-          SerialBT.write(tempvar);
+          BUS_output(tempvar);
         }                   
       }else
       
@@ -147,21 +148,21 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
       /* get Oillevel compare values for OldSensor*/
       if((receive_BT_Array[1]==0x06) && (receive_BT_Array[2]==0x05))
       {
-        SerialBT.write(posResponse);
-        SerialBT.write(0x06);
-        SerialBT.write(0x05);                  
+        BUS_output(posResponse);
+        BUS_output(0x06);
+        BUS_output(0x05);                  
         uint8_t i = 0;
         uint8_t tempvar;
         uint8_t sizeOfArr = sizeof(OldOilLevelCompValues) / sizeof(OldOilLevelCompValues[0]);
         for(i=0;i<sizeOfArr;i++)
         {
             /* As example testval =         500 == 0x01F4    */
-            /* SerialBT.write(testval >> 8);         -> 0x01 */
-            /* SerialBT.write(testval & 0xFF);       -> 0xF4 */
+            /* BUS_output(testval >> 8);         -> 0x01 */
+            /* BUS_output(testval & 0xFF);       -> 0xF4 */
           tempvar = (OldOilLevelCompValues[i] >> 8) ;
-          SerialBT.write(tempvar);
+          BUS_output(tempvar);
           tempvar = (OldOilLevelCompValues[i] & 0xFF);
-          SerialBT.write(tempvar);
+          BUS_output(tempvar);
         } 
         
       }else
@@ -169,21 +170,21 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
       /* get Oiltemperature compare values for NewSensor */
       if((receive_BT_Array[1]==0x06) && (receive_BT_Array[2]==0x06))
       {
-        SerialBT.write(posResponse);
-        SerialBT.write(0x06);
-        SerialBT.write(0x06);                  
+        BUS_output(posResponse);
+        BUS_output(0x06);
+        BUS_output(0x06);                  
         uint8_t i = 0;
         uint8_t tempvar;
         uint8_t sizeOfArr = sizeof(NewOilTempCompValues) / sizeof(NewOilTempCompValues[0]);
         for(i=0;i<sizeOfArr;i++)
         {
             /* As example testval =         500 == 0x01F4    */
-            /* SerialBT.write(testval >> 8);         -> 0x01 */
-            /* SerialBT.write(testval & 0xFF);       -> 0xF4 */
+            /* BUS_output(testval >> 8);         -> 0x01 */
+            /* BUS_output(testval & 0xFF);       -> 0xF4 */
           tempvar = (NewOilTempCompValues[i] >> 8) ;
-          SerialBT.write(tempvar);
+          BUS_output(tempvar);
           tempvar = (NewOilTempCompValues[i] & 0xFF);
-          SerialBT.write(tempvar);
+          BUS_output(tempvar);
         } 
         
       }else
@@ -192,21 +193,21 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
       /* get OilLevel compare values for NewSensor */
       if((receive_BT_Array[1]==0x06) && (receive_BT_Array[2]==0x07))
       {
-        SerialBT.write(posResponse);
-        SerialBT.write(0x06);
-        SerialBT.write(0x07);                  
+        BUS_output(posResponse);
+        BUS_output(0x06);
+        BUS_output(0x07);                  
         uint8_t i = 0;
         uint8_t tempvar;
         uint8_t sizeOfArr = sizeof(NewOilLevelCompValues) / sizeof(NewOilLevelCompValues[0]);
         for(i=0;i<sizeOfArr;i++)
         {
             /* As example testval =         500 == 0x01F4    */
-            /* SerialBT.write(testval >> 8);         -> 0x01 */
-            /* SerialBT.write(testval & 0xFF);       -> 0xF4 */
+            /* BUS_output(testval >> 8);         -> 0x01 */
+            /* BUS_output(testval & 0xFF);       -> 0xF4 */
           tempvar = (NewOilLevelCompValues[i] >> 8) ;
-          SerialBT.write(tempvar);
+          BUS_output(tempvar);
           tempvar = (NewOilLevelCompValues[i] & 0xFF);
-          SerialBT.write(tempvar);
+          BUS_output(tempvar);
         } 
       }
       else
@@ -215,10 +216,10 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
       /* get the Brandvalue */
       if((receive_BT_Array[1]==0x06) && (receive_BT_Array[2]==0x0A))
       {
-        SerialBT.write(posResponse);
-        SerialBT.write(0x06);
-        SerialBT.write(0x0A);                  
-        SerialBT.write(brand);
+        BUS_output(posResponse);
+        BUS_output(0x06);
+        BUS_output(0x0A);                  
+        BUS_output(brand);
       }
       else
 
@@ -228,10 +229,10 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
       /* get ExtraOutputPin flag*/
       if((receive_BT_Array[1]==0x06) && (receive_BT_Array[2]==0x0B))
       {
-        SerialBT.write(posResponse);
-        SerialBT.write(0x06);
-        SerialBT.write(0x0B);                  
-        SerialBT.write(statusOfExtraOutputPin);
+        BUS_output(posResponse);
+        BUS_output(0x06);
+        BUS_output(0x0B);                  
+        BUS_output(statusOfExtraOutputPin);
         
       }else
 
@@ -240,17 +241,17 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
       /* get OldSensorNewSensor flag*/
       if((receive_BT_Array[1]==0x06) && (receive_BT_Array[2]==0x0C))
       {
-        SerialBT.write(posResponse);
-        SerialBT.write(0x06);
-        SerialBT.write(0x0C);                  
-        SerialBT.write(NewOilSensorEquipped);
+        BUS_output(posResponse);
+        BUS_output(0x06);
+        BUS_output(0x0C);                  
+        BUS_output(NewOilSensorEquipped);
         
       }
       else
       {
-        SerialBT.write(0x7F);
-        SerialBT.write(UDS_READ_DATA_BY_IDENTIFIER);
-        SerialBT.write(UDS_NRC_requestOutOfRange);
+        BUS_output(0x7F);
+        BUS_output(UDS_READ_DATA_BY_IDENTIFIER);
+        BUS_output(UDS_NRC_requestOutOfRange);
       }
   
     
@@ -295,13 +296,13 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
           //Modulename =  Temparray;
           SerialBT.begin(tempStr);
          // Modulename=Temparr;
-          SerialBT.write(posResponse);
-          SerialBT.write(0xF1);
-          SerialBT.write(0x97); 
+          BUS_output(posResponse);
+          BUS_output(0xF1);
+          BUS_output(0x97); 
         }else{
-          SerialBT.write(0x7F);
-          SerialBT.write(UDS_WRITE_DATA_BY_IDENTIFIER);
-          SerialBT.write(UDS_NRC_incorrectMessageLengthOrInvalidFormat);
+          BUS_output(0x7F);
+          BUS_output(UDS_WRITE_DATA_BY_IDENTIFIER);
+          BUS_output(UDS_NRC_incorrectMessageLengthOrInvalidFormat);
         }
       }
       else
@@ -314,16 +315,16 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
         val = receive_BT_Array[3];
         if(val == NULL)
         {
-          SerialBT.write(0x7f);
-          SerialBT.write(0x2e);
-          SerialBT.write(0x13);
+          BUS_output(0x7f);
+          BUS_output(0x2e);
+          BUS_output(0x13);
         }
         else
         {
           testValue_oilTemperature = val;
-          SerialBT.write(posResponse);
-          SerialBT.write(0x06);
-          SerialBT.write(0x00); 
+          BUS_output(posResponse);
+          BUS_output(0x06);
+          BUS_output(0x00); 
         }
       }else
 
@@ -335,16 +336,16 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
         val = receive_BT_Array[3];
         if(val == NULL)
         {
-          SerialBT.write(0x7f);
-          SerialBT.write(0x2e);
-          SerialBT.write(0x13);
+          BUS_output(0x7f);
+          BUS_output(0x2e);
+          BUS_output(0x13);
         }
         else
         {
           testValue_oilLevelPercentage =val;
-          SerialBT.write(posResponse);
-          SerialBT.write(0x06);
-          SerialBT.write(0x01); 
+          BUS_output(posResponse);
+          BUS_output(0x06);
+          BUS_output(0x01); 
         }
       }else
 
@@ -357,9 +358,9 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
         val = receive_BT_Array[3];
         if(val == NULL)
         {
-          SerialBT.write(0x7f);
-          SerialBT.write(0x2e);
-          SerialBT.write(0x13);
+          BUS_output(0x7f);
+          BUS_output(0x2e);
+          BUS_output(0x13);
         }
         else
         {
@@ -399,9 +400,9 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
           preferences.end();
           
 
-          SerialBT.write(posResponse);
-          SerialBT.write(0x06);
-          SerialBT.write(0x04); 
+          BUS_output(posResponse);
+          BUS_output(0x06);
+          BUS_output(0x04); 
         }
 
 
@@ -414,9 +415,9 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
         val = receive_BT_Array[3];
         if(val == NULL)
         {
-          SerialBT.write(0x7f);
-          SerialBT.write(0x2e);
-          SerialBT.write(0x13);
+          BUS_output(0x7f);
+          BUS_output(0x2e);
+          BUS_output(0x13);
         }
         else
         {
@@ -446,9 +447,9 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
 
           preferences.end();
 
-          SerialBT.write(posResponse);
-          SerialBT.write(0x06);
-          SerialBT.write(0x05); 
+          BUS_output(posResponse);
+          BUS_output(0x06);
+          BUS_output(0x05); 
         }
       }else
 
@@ -460,9 +461,9 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
         val = receive_BT_Array[3];
         if(val == NULL)
         {
-          SerialBT.write(0x7f);
-          SerialBT.write(0x2e);
-          SerialBT.write(0x13);
+          BUS_output(0x7f);
+          BUS_output(0x2e);
+          BUS_output(0x13);
         }
         else
         {
@@ -502,9 +503,9 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
 
           preferences.end();
         
-          SerialBT.write(posResponse);
-          SerialBT.write(0x06);
-          SerialBT.write(0x06); 
+          BUS_output(posResponse);
+          BUS_output(0x06);
+          BUS_output(0x06); 
         }
       }else
 
@@ -516,9 +517,9 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
         val = receive_BT_Array[3];
         if(val == NULL)
         {
-          SerialBT.write(0x7f);
-          SerialBT.write(0x2e);
-          SerialBT.write(0x13);
+          BUS_output(0x7f);
+          BUS_output(0x2e);
+          BUS_output(0x13);
         }
         else
         {
@@ -547,9 +548,9 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
           preferences.putShort("New_sensor_OilLevelFull",temp);
           preferences.end();
           
-          SerialBT.write(posResponse);
-          SerialBT.write(0x06);
-          SerialBT.write(0x07); 
+          BUS_output(posResponse);
+          BUS_output(0x06);
+          BUS_output(0x07); 
         }
       }
       else 
@@ -561,9 +562,9 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
         val = receive_BT_Array[3];
         if(val == NULL)
         {
-          SerialBT.write(0x7f);
-          SerialBT.write(0x2e);
-          SerialBT.write(0x13);
+          BUS_output(0x7f);
+          BUS_output(0x2e);
+          BUS_output(0x13);
         }
         else
         {
@@ -572,9 +573,9 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
           preferences.putUChar("Brand",val);
           preferences.end();
           
-          SerialBT.write(posResponse);
-          SerialBT.write(0x06);
-          SerialBT.write(0x0A); 
+          BUS_output(posResponse);
+          BUS_output(0x06);
+          BUS_output(0x0A); 
         }
       }
       else
@@ -587,17 +588,17 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
         val = receive_BT_Array[3];
         if(val == NULL)
         {
-          SerialBT.write(0x7f);
-          SerialBT.write(0x2e);
-          SerialBT.write(0x13);
+          BUS_output(0x7f);
+          BUS_output(0x2e);
+          BUS_output(0x13);
         }
         else
         {
           statusOfExtraOutputPin = val;
           digitalWrite(OutputPin, statusOfExtraOutputPin);
-          SerialBT.write(posResponse);
-          SerialBT.write(0x06);
-          SerialBT.write(0x0B); 
+          BUS_output(posResponse);
+          BUS_output(0x06);
+          BUS_output(0x0B); 
         }
       }
       else
@@ -612,9 +613,9 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
         val = (bool)receive_BT_Array[3];
         if(val == NULL)
         {
-          SerialBT.write(0x7f);
-          SerialBT.write(0x2e);
-          SerialBT.write(0x13);
+          BUS_output(0x7f);
+          BUS_output(0x2e);
+          BUS_output(0x13);
         }
         else
         {
@@ -626,17 +627,17 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
             preferences.end();
           }
 
-          SerialBT.write(posResponse);
-          SerialBT.write(0x06);
-          SerialBT.write(0x0C); 
+          BUS_output(posResponse);
+          BUS_output(0x06);
+          BUS_output(0x0C); 
         }
       }else
 
 
       {
-        SerialBT.write(0x7F);
-        SerialBT.write(UDS_WRITE_DATA_BY_IDENTIFIER);
-        SerialBT.write(UDS_NRC_requestOutOfRange);
+        BUS_output(0x7F);
+        BUS_output(UDS_WRITE_DATA_BY_IDENTIFIER);
+        BUS_output(UDS_NRC_requestOutOfRange);
       }
     }else
 
@@ -654,16 +655,25 @@ void analyse_BT_Protocol(uint8_t receive_BT_Array[])
             preferences.end();
           }
           
-          SerialBT.write(0x50);
+          BUS_output(0x50);
       }else{
-        SerialBT.write(0x7F);
-        SerialBT.write(UDS_Session_Control);
-        SerialBT.write(UDS_NRC_subFunctionNotSupported);
+        BUS_output(0x7F);
+        BUS_output(UDS_Session_Control);
+        BUS_output(UDS_NRC_subFunctionNotSupported);
       }
-    }else{
-        SerialBT.write(0x7F);
-        SerialBT.write(receive_BT_Array[0]);
-        SerialBT.write(UDS_NRC_serviceNotSupported);
+    }else
+    
+    if(receive_BT_Array[0] == UDS_ECU_Reset)
+    {
+      ESP.restart();
+    }else
+    
+    
+  
+    {
+        BUS_output(0x7F);
+        BUS_output(receive_BT_Array[0]);
+        BUS_output(UDS_NRC_serviceNotSupported);
     }
     delete_BT_buffer();
   }
