@@ -1,9 +1,9 @@
 #include <Arduino.h>
 #include <stdio.h>
 #include "oilsensor.h"
+#include "nrc_uds_protocol.h"
 
-
-extern bool TimeoutSensorDetected  ;
+extern bool TimeoutSensorDetected;
 extern bool NewOilSensorEquipped; 
 
 extern uint8_t oilTemperature;
@@ -13,18 +13,13 @@ extern uint8_t oilLevelPercentage ;
 extern uint8_t testValue_oilTemperature;
 extern uint8_t testValue_oilLevelPercentage;
 
-extern uint16_t OldOilTempCompValues[];
-extern uint16_t OldOilLevelCompValues[];
-
-extern uint16_t NewOilTempCompValues[];
-extern uint16_t NewOilLevelCompValues[];
 
 
 
 /* This methods converts the received impulses to an Percentage for OilLevel and Oil Temperature*/
 void convertImpulseToPercentage(uint16_t cntRawData_Temp, uint16_t cntRawData_Level,uint8_t session) {
-  if (debugFlag == false) 
-  { /* Debug of... normal Operation*/
+  if (session == UDS_Session_Control_Default_Session) 
+  {  /* Debug of... normal Operation*/
     if(TimeoutSensorDetected == false)
 	{
       if(NewOilSensorEquipped==true)
